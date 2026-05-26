@@ -379,11 +379,53 @@ button {
 .feedback.correct {
   background: #ddf9ec;
   color: var(--green);
+  animation: correct-pop 420ms ease both;
 }
 
 .feedback.wrong {
   background: #ffe5e1;
   color: var(--red);
+}
+
+.confetti-burst {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.confetti-burst span {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  width: 0.55rem;
+  height: 0.85rem;
+  border-radius: 0.18rem;
+  animation: confetti-fly 980ms ease-out forwards;
+}
+
+@keyframes confetti-fly {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.6) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y) + 130px)) scale(1) rotate(var(--r));
+  }
+}
+
+@keyframes correct-pop {
+  0% {
+    transform: scale(0.98);
+  }
+  60% {
+    transform: scale(1.015);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .competition-layout {

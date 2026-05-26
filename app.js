@@ -89,6 +89,10 @@
     return word ? `Your word is ${word.word}.` : "Choose a word first.";
   }
 
+  function buildCelebrationMessage(word) {
+    return word ? `Congratulations! ${word.word} is correct.` : "Congratulations! Correct answer.";
+  }
+
   function getWinner(teams) {
     if (!teams.length) return null;
     const highestScore = Math.max(...teams.map((team) => team.score));
@@ -247,6 +251,29 @@
     elements.feedback.className = `feedback ${type || ""}`.trim();
   }
 
+  function launchConfetti() {
+    if (typeof document === "undefined") return;
+
+    const burst = document.createElement("div");
+    burst.className = "confetti-burst";
+    const colors = ["#f7b801", "#2557d6", "#178f5a", "#c63d37", "#8b5cf6"];
+    for (let index = 0; index < 36; index += 1) {
+      const piece = document.createElement("span");
+      piece.style.setProperty("--x", `${Math.cos(index) * (90 + (index % 6) * 18)}px`);
+      piece.style.setProperty("--y", `${Math.sin(index) * (70 + (index % 5) * 16)}px`);
+      piece.style.setProperty("--r", `${index * 23}deg`);
+      piece.style.background = colors[index % colors.length];
+      burst.appendChild(piece);
+    }
+    document.body.appendChild(burst);
+    window.setTimeout(() => burst.remove(), 1200);
+  }
+
+  function celebrateCorrectAnswer(word) {
+    launchConfetti();
+    speak(buildCelebrationMessage(word), { rate: 0.82, pitch: 1.08 });
+  }
+
   function populateSelect(select, values, label) {
     select.innerHTML = `<option value="all">All ${label}</option>`;
     values.forEach((value) => {
@@ -357,7 +384,8 @@
     if (isCorrectAnswer(elements.answerInput.value, state.currentWord.word)) {
       state.score += 10;
       state.correct += 1;
-      setFeedback(elements, "Correct! Excellent spelling.", "correct");
+      setFeedback(elements, "Correct! Congratulations, excellent spelling.", "correct");
+      celebrateCorrectAnswer(state.currentWord);
     } else {
       state.wrong += 1;
       state.mistakes = addMistake(state.mistakes, state.currentWord);
@@ -645,6 +673,7 @@
   if (typeof module !== "undefined") {
     module.exports = {
       addMistake,
+      buildCelebrationMessage,
       buildSpeechText,
       buildCompetitionPrompt,
       formatCompetitionWord,

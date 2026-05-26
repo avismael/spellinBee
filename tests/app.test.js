@@ -3,6 +3,7 @@ const assert = require("node:assert/strict");
 
 const {
   addMistake,
+  buildCelebrationMessage,
   buildCompetitionPrompt,
   buildSpeechText,
   formatCompetitionWord,
@@ -72,6 +73,11 @@ test("hides competition word until revealed", () => {
 test("builds competition prompt for the current word", () => {
   assert.equal(buildCompetitionPrompt(null), "Choose a word first.");
   assert.equal(buildCompetitionPrompt({ word: "teacher" }), "Your word is teacher.");
+});
+
+test("builds celebration messages for correct answers", () => {
+  assert.equal(buildCelebrationMessage(null), "Congratulations! Correct answer.");
+  assert.equal(buildCelebrationMessage({ word: "teacher" }), "Congratulations! teacher is correct.");
 });
 
 test("formats hidden values until revealed", () => {
