@@ -125,6 +125,20 @@
     }));
   }
 
+  function formatSpeechRecognitionError(error) {
+    const code = typeof error === "string" ? error : error?.error;
+    const messages = {
+      "not-allowed": "Microphone permission was blocked. Allow microphone access, then try again or use manual validation.",
+      "service-not-allowed": "Speech recognition is blocked by this browser or connection. Try Chrome or Edge on HTTPS/localhost, or use manual validation.",
+      "no-speech": "No speech was detected. Speak clearly after pressing Start Spelling, or use manual validation.",
+      "audio-capture": "No microphone was found. Check the microphone, then try again or use manual validation.",
+      network: "Speech recognition needs an internet connection in this browser. Check the connection or use manual validation.",
+      aborted: "Speech recognition was stopped. Press Start Spelling to try again.",
+      "language-not-supported": "English speech recognition is not supported by this browser. Try Chrome or Edge, or use manual validation."
+    };
+    return messages[code] || "Speech recognition failed. Try Chrome or Edge with microphone permission, or use manual validation.";
+  }
+
   function getWinner(teams) {
     if (!teams.length) return null;
     const highestScore = Math.max(...teams.map((team) => team.score));
@@ -603,10 +617,14 @@
         ? `Automatic result: correct (${transcript})`
         : `Recognized: ${transcript}`;
     };
-    recognition.onerror = () => {
-      elements.speechResult.textContent = "Recognition failed. Use manual validation.";
+    recognition.onerror = (event) => {
+      elements.speechResult.textContent = formatSpeechRecognitionError(event);
     };
-    recognition.start();
+    try {
+      recognition.start();
+    } catch (error) {
+      elements.speechResult.textContent = formatSpeechRecognitionError(error);
+    }
   }
 
   async function loadWords() {
@@ -758,6 +776,7 @@
       buildSpeechText,
       buildCompetitionPrompt,
       buildSpellingProgress,
+      formatSpeechRecognitionError,
       formatCompetitionWord,
       formatHiddenValue,
       extractSpokenLetters,

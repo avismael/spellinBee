@@ -7,6 +7,7 @@ const {
   buildCompetitionPrompt,
   buildSpellingProgress,
   buildSpeechText,
+  formatSpeechRecognitionError,
   extractSpokenLetters,
   formatCompetitionWord,
   formatHiddenValue,
@@ -132,6 +133,13 @@ test("builds spelling progress slots", () => {
     { letter: "a", value: "a", correct: true, filled: true },
     { letter: "t", value: "", correct: false, filled: false }
   ]);
+});
+
+test("explains speech recognition errors", () => {
+  assert.match(formatSpeechRecognitionError({ error: "not-allowed" }), /Microphone permission/);
+  assert.match(formatSpeechRecognitionError({ error: "no-speech" }), /No speech/);
+  assert.match(formatSpeechRecognitionError({ error: "network" }), /internet connection/);
+  assert.match(formatSpeechRecognitionError({ error: "unknown" }), /Speech recognition failed/);
 });
 
 test("persists voice settings", () => {
