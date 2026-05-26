@@ -144,7 +144,7 @@
 
   function getElements() {
     return {
-      panels: document.querySelectorAll(".panel"),
+      views: document.querySelectorAll(".view"),
       navButtons: document.querySelectorAll("[data-view]"),
       categorySelect: document.getElementById("category-select"),
       unitSelect: document.getElementById("unit-select"),
@@ -364,7 +364,8 @@
   }
 
   function showView(elements, viewId) {
-    elements.panels.forEach((panel) => panel.classList.toggle("active", panel.id === viewId));
+    elements.views.forEach((view) => view.classList.toggle("active", view.id === viewId));
+    elements.navButtons.forEach((button) => button.classList.toggle("current-view", button.dataset.view === viewId));
     document.getElementById(viewId)?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
@@ -551,6 +552,7 @@
     renderCompetition(elements);
     loadBrowserVoices(elements);
     startNewRound(elements);
+    showView(elements, "home");
   }
 
   if (typeof document !== "undefined") {

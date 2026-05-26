@@ -7,23 +7,25 @@
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
-    <header class="hero" id="home">
-      <nav class="topbar" aria-label="Main navigation">
-        <a class="brand" href="#home" aria-label="Spelling Bee INSE home">
-          <span class="brand-mark" aria-hidden="true">SB</span>
-          <span>
-            <strong>Spelling Bee INSE</strong>
-            <small>Listen, Spell and Speak</small>
-          </span>
-        </a>
-        <div class="nav-actions">
-          <button type="button" data-view="practice">Practice Mode</button>
-          <button type="button" data-view="competition">Competition</button>
-          <button type="button" data-view="mistakes">Review Mistakes</button>
-          <button type="button" data-view="word-bank">Word Bank</button>
-        </div>
-      </nav>
+    <nav class="app-shell-nav" aria-label="Main navigation">
+      <button class="brand" type="button" data-view="home" aria-label="Spelling Bee INSE home">
+        <span class="brand-mark" aria-hidden="true">SB</span>
+        <span>
+          <strong>Spelling Bee INSE</strong>
+          <small>Listen, Spell and Speak</small>
+        </span>
+      </button>
+      <div class="nav-actions">
+        <button type="button" data-view="home">Home</button>
+        <button type="button" data-view="practice">Practice Mode</button>
+        <button type="button" data-view="spell-aloud">Spell Aloud</button>
+        <button type="button" data-view="competition">Competition</button>
+        <button type="button" data-view="mistakes">Review Mistakes</button>
+        <button type="button" data-view="word-bank">Word Bank</button>
+      </div>
+    </nav>
 
+    <header class="hero view active" id="home">
       <section class="hero-grid">
         <div class="hero-copy">
           <p class="eyebrow">English vocabulary practice</p>
@@ -34,6 +36,7 @@
           <div class="hero-buttons">
             <button class="primary" type="button" data-view="practice">Start Practice</button>
             <button class="secondary" type="button" data-view="competition">Start Competition</button>
+            <button type="button" data-view="spell-aloud">Practice Speaking</button>
           </div>
         </div>
         <div class="bee-card" aria-label="App highlights">
@@ -45,7 +48,7 @@
     </header>
 
     <main>
-      <section class="panel active" id="practice" aria-labelledby="practice-title">
+      <section class="module view" id="practice" aria-labelledby="practice-title">
         <div class="section-heading">
           <p class="eyebrow">Practice Mode</p>
           <h2 id="practice-title">Listen & Write</h2>
@@ -114,7 +117,7 @@
         </article>
       </section>
 
-      <section class="panel" id="spell-aloud" aria-labelledby="spell-title">
+      <section class="module view" id="spell-aloud" aria-labelledby="spell-title">
         <div class="section-heading">
           <p class="eyebrow">Speaking Practice</p>
           <h2 id="spell-title">Spell Aloud</h2>
@@ -131,7 +134,7 @@
         </div>
       </section>
 
-      <section class="panel" id="competition" aria-labelledby="competition-title">
+      <section class="module view" id="competition" aria-labelledby="competition-title">
         <div class="section-heading">
           <p class="eyebrow">Team Challenge</p>
           <h2 id="competition-title">Spelling Bee Competition</h2>
@@ -173,7 +176,7 @@
         <div class="scoreboard" id="scoreboard" aria-label="Team scoreboard"></div>
       </section>
 
-      <section class="panel" id="mistakes" aria-labelledby="mistakes-title">
+      <section class="module view" id="mistakes" aria-labelledby="mistakes-title">
         <div class="section-heading">
           <p class="eyebrow">Review Mistakes</p>
           <h2 id="mistakes-title">Words to Practice Again</h2>
@@ -186,7 +189,7 @@
         <div class="word-list" id="mistakes-list"></div>
       </section>
 
-      <section class="panel" id="word-bank" aria-labelledby="bank-title">
+      <section class="module view" id="word-bank" aria-labelledby="bank-title">
         <div class="section-heading">
           <p class="eyebrow">Word Bank</p>
           <h2 id="bank-title">Vocabulary Loaded from JSON</h2>
