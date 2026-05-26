@@ -124,6 +124,17 @@ footer {
   gap: 0.75rem;
 }
 
+.voice-controls {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(180px, 0.45fr) auto;
+  gap: 0.75rem;
+  align-items: end;
+  margin: 1rem 0;
+  padding: 1rem;
+  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.72);
+}
+
 .hero-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
@@ -376,7 +387,8 @@ footer {
 
   .controls-grid,
   .score-strip,
-  .points-grid {
+  .points-grid,
+  .voice-controls {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -387,6 +399,7 @@ footer {
   .listen-actions button,
   .manual-actions button,
   .mistake-actions button,
+  .voice-controls button,
   .answer-row button,
   .controls-grid button {
     width: 100%;
@@ -395,6 +408,7 @@ footer {
   .controls-grid,
   .score-strip,
   .points-grid,
+  .voice-controls,
   .answer-row {
     grid-template-columns: 1fr;
   }

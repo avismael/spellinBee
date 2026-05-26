@@ -3,14 +3,20 @@ const assert = require("node:assert/strict");
 
 const {
   addMistake,
+  buildSpeechText,
+  findBestVoice,
   filterWords,
   getWinner,
   isCorrectAnswer,
   normalizeAnswer,
   readMistakes,
+  readVoiceSettings,
   scoreCompetitionAnswer,
+  scoreVoice,
   selectNextWord,
   writeMistakes,
+  writeVoiceSettings,
+  VOICE_SETTINGS_KEY,
   STORAGE_KEY
 } = require("../app.js");
 
@@ -68,4 +74,32 @@ test("persists mistakes with the configured storage key", () => {
   writeMistakes(fakeStorage, [words[0]]);
   assert.equal(storage.has(STORAGE_KEY), true);
   assert.deepEqual(readMistakes(fakeStorage), [words[0]]);
+});
+
+test("prefers natural English voices when available", () => {
+  const voices = [
+    { name: "Spanish Desktop", lang: "es-ES", localService: true, voiceURI: "Spanish Desktop" },
+    { name: "Microsoft David", lang: "en-US", localService: true, voiceURI: "Microsoft David" },
+    { name: "Google US English", lang: "en-US", localService: false, voiceURI: "Google US English" }
+  ];
+  assert.equal(scoreVoice(voices[0]), -1);
+  assert.equal(findBestVoice(voices).name, "Google US English");
+  assert.equal(findBestVoice(voices, "Microsoft David").name, "Microsoft David");
+});
+
+test("builds speech text with optional example context", () => {
+  const word = { word: "teacher", example: "My teacher is kind." };
+  assert.equal(buildSpeechText(word, false), "teacher");
+  assert.equal(buildSpeechText(word, true), "teacher. My teacher is kind.");
+});
+
+test("persists voice settings", () => {
+  const storage = new Map();
+  const fakeStorage = {
+    getItem: (key) => storage.get(key),
+    setItem: (key, value) => storage.set(key, value)
+  };
+  writeVoiceSettings(fakeStorage, { selectedVoiceName: "Google US English", voiceRate: 0.72 });
+  assert.equal(storage.has(VOICE_SETTINGS_KEY), true);
+  assert.deepEqual(readVoiceSettings(fakeStorage), { selectedVoiceName: "Google US English", voiceRate: 0.72 });
 });

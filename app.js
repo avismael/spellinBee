@@ -5,6 +5,8 @@
   ];
 
   const STORAGE_KEY = "spellingBeeInseMistakes";
+  const VOICE_SETTINGS_KEY = "spellingBeeInseVoiceSettings";
+  const PREFERRED_VOICE_NAMES = ["natural", "online", "neural", "google", "microsoft", "zira", "aria", "jenny", "samantha", "daniel"];
 
   const state = {
     words: [],
@@ -23,7 +25,11 @@
     currentTeamIndex: 0,
     competitionWord: null,
     timerId: null,
-    secondsLeft: 60
+    secondsLeft: 60,
+    voices: [],
+    selectedVoiceName: "",
+    voiceRate: 0.78,
+    voicePitch: 1.02
   };
 
   function normalizeAnswer(value) {
@@ -92,6 +98,50 @@
     return [...mistakes, word];
   }
 
+  function scoreVoice(voice) {
+    const name = `${voice.name || ""} ${voice.voiceURI || ""}`.toLowerCase();
+    const lang = String(voice.lang || "").toLowerCase();
+    if (!lang.startsWith("en")) return -1;
+
+    const qualityScore = PREFERRED_VOICE_NAMES.reduce((score, keyword, index) => {
+      return name.includes(keyword) ? Math.max(score, 30 - index) : score;
+    }, 0);
+    const localeScore = lang === "en-us" ? 10 : lang === "en-gb" ? 8 : 5;
+    const localScore = voice.localService ? 2 : 4;
+    return qualityScore + localeScore + localScore;
+  }
+
+  function findBestVoice(voices, selectedVoiceName) {
+    if (!Array.isArray(voices) || !voices.length) return null;
+    const selected = voices.find((voice) => voice.name === selectedVoiceName);
+    if (selected) return selected;
+
+    return voices
+      .filter((voice) => scoreVoice(voice) >= 0)
+      .sort((a, b) => scoreVoice(b) - scoreVoice(a))[0] || voices[0];
+  }
+
+  function buildSpeechText(word, includeExample) {
+    if (!word) return "";
+    return includeExample && word.example ? `${word.word}. ${word.example}` : word.word;
+  }
+
+  function readVoiceSettings(storage) {
+    try {
+      const settings = JSON.parse(storage.getItem(VOICE_SETTINGS_KEY) || "{}");
+      return {
+        selectedVoiceName: settings.selectedVoiceName || "",
+        voiceRate: Number(settings.voiceRate || 0.78)
+      };
+    } catch (_error) {
+      return { selectedVoiceName: "", voiceRate: 0.78 };
+    }
+  }
+
+  function writeVoiceSettings(storage, settings) {
+    storage.setItem(VOICE_SETTINGS_KEY, JSON.stringify(settings));
+  }
+
   function getElements() {
     return {
       panels: document.querySelectorAll(".panel"),
@@ -101,7 +151,11 @@
       levelSelect: document.getElementById("level-select"),
       newRoundBtn: document.getElementById("new-round-btn"),
       listenBtn: document.getElementById("listen-btn"),
+      listenContextBtn: document.getElementById("listen-context-btn"),
       nextWordBtn: document.getElementById("next-word-btn"),
+      voiceSelect: document.getElementById("voice-select"),
+      voiceRate: document.getElementById("voice-rate"),
+      testVoiceBtn: document.getElementById("test-voice-btn"),
       answerForm: document.getElementById("answer-form"),
       answerInput: document.getElementById("answer-input"),
       feedback: document.getElementById("feedback"),
@@ -135,16 +189,26 @@
     };
   }
 
-  function speak(text) {
+  function speak(text, options = {}) {
     if (!text || typeof window === "undefined" || !window.speechSynthesis) {
       return false;
     }
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = "en-US";
-    utterance.rate = 0.82;
+    utterance.rate = Number(options.rate || state.voiceRate || 0.78);
+    utterance.pitch = Number(options.pitch || state.voicePitch || 1.02);
+    const voice = findBestVoice(state.voices, state.selectedVoiceName);
+    if (voice) {
+      utterance.voice = voice;
+      utterance.lang = voice.lang || "en-US";
+    }
     window.speechSynthesis.speak(utterance);
     return true;
+  }
+
+  function speakWord(word, includeExample = false) {
+    return speak(buildSpeechText(word, includeExample));
   }
 
   function setFeedback(elements, message, type) {
@@ -166,6 +230,31 @@
     populateSelect(elements.categorySelect, getUniqueValues(state.words, "category"), "categories");
     populateSelect(elements.unitSelect, getUniqueValues(state.words, "unit"), "units");
     populateSelect(elements.levelSelect, getUniqueValues(state.words, "level"), "levels");
+  }
+
+  function renderVoices(elements) {
+    const previousValue = elements.voiceSelect.value || state.selectedVoiceName;
+    const englishVoices = state.voices.filter((voice) => scoreVoice(voice) >= 0).sort((a, b) => scoreVoice(b) - scoreVoice(a));
+    elements.voiceSelect.innerHTML = `<option value="">Best available English voice</option>`;
+
+    englishVoices.forEach((voice) => {
+      const option = document.createElement("option");
+      option.value = voice.name;
+      option.textContent = `${voice.name} (${voice.lang})`;
+      elements.voiceSelect.appendChild(option);
+    });
+
+    elements.voiceSelect.value = englishVoices.some((voice) => voice.name === previousValue) ? previousValue : "";
+  }
+
+  function loadBrowserVoices(elements) {
+    if (!window.speechSynthesis) return;
+    state.voices = window.speechSynthesis.getVoices();
+    renderVoices(elements);
+    window.speechSynthesis.onvoiceschanged = () => {
+      state.voices = window.speechSynthesis.getVoices();
+      renderVoices(elements);
+    };
   }
 
   function currentFilters(elements) {
@@ -260,7 +349,7 @@
       const listenButton = document.createElement("button");
       listenButton.type = "button";
       listenButton.textContent = "Listen";
-      listenButton.addEventListener("click", () => speak(word.word));
+      listenButton.addEventListener("click", () => speakWord(word));
       card.appendChild(listenButton);
       container.appendChild(card);
     });
@@ -322,7 +411,7 @@
     state.roundWordIds = result.usedIds;
     startTimer(elements);
     if (state.competitionWord) {
-      speak(state.competitionWord.word);
+      speakWord(state.competitionWord);
     }
   }
 
@@ -394,7 +483,17 @@
       });
     });
     elements.newRoundBtn.addEventListener("click", () => startNewRound(elements));
-    elements.listenBtn.addEventListener("click", () => speak(state.currentWord?.word));
+    elements.listenBtn.addEventListener("click", () => speakWord(state.currentWord));
+    elements.listenContextBtn.addEventListener("click", () => speakWord(state.currentWord, true));
+    elements.voiceSelect.addEventListener("change", () => {
+      state.selectedVoiceName = elements.voiceSelect.value;
+      writeVoiceSettings(window.localStorage, { selectedVoiceName: state.selectedVoiceName, voiceRate: state.voiceRate });
+    });
+    elements.voiceRate.addEventListener("input", () => {
+      state.voiceRate = Number(elements.voiceRate.value);
+      writeVoiceSettings(window.localStorage, { selectedVoiceName: state.selectedVoiceName, voiceRate: state.voiceRate });
+    });
+    elements.testVoiceBtn.addEventListener("click", () => speak("Beautiful. My teacher is kind."));
     elements.nextWordBtn.addEventListener("click", () => chooseNextPracticeWord(elements));
     elements.answerForm.addEventListener("submit", (event) => {
       event.preventDefault();
@@ -416,7 +515,7 @@
     });
     elements.resetCompetitionBtn.addEventListener("click", () => resetCompetition(elements));
     elements.competitionWordBtn.addEventListener("click", () => chooseCompetitionWord(elements));
-    elements.competitionListenBtn.addEventListener("click", () => speak(state.competitionWord?.word));
+    elements.competitionListenBtn.addEventListener("click", () => speakWord(state.competitionWord));
     elements.pointsButtons.forEach((button) => {
       button.addEventListener("click", () => awardCompetitionPoints(elements, Number(button.dataset.points)));
     });
@@ -438,6 +537,10 @@
 
   async function init() {
     const elements = getElements();
+    const voiceSettings = readVoiceSettings(window.localStorage);
+    state.selectedVoiceName = voiceSettings.selectedVoiceName;
+    state.voiceRate = voiceSettings.voiceRate;
+    elements.voiceRate.value = state.voiceRate;
     state.words = await loadWords();
     state.mistakes = readMistakes(window.localStorage);
     renderFilters(elements);
@@ -446,6 +549,7 @@
     renderWordBank(elements);
     renderMistakes(elements);
     renderCompetition(elements);
+    loadBrowserVoices(elements);
     startNewRound(elements);
   }
 
@@ -456,6 +560,8 @@
   if (typeof module !== "undefined") {
     module.exports = {
       addMistake,
+      buildSpeechText,
+      findBestVoice,
       filterWords,
       getUniqueValues,
       getWinner,
@@ -463,8 +569,12 @@
       normalizeAnswer,
       readMistakes,
       scoreCompetitionAnswer,
+      scoreVoice,
       selectNextWord,
       writeMistakes,
+      writeVoiceSettings,
+      readVoiceSettings,
+      VOICE_SETTINGS_KEY,
       STORAGE_KEY
     };
   }
