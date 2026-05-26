@@ -220,7 +220,8 @@
       practiceMistakesBtn: document.getElementById("practice-mistakes-btn"),
       clearMistakesBtn: document.getElementById("clear-mistakes-btn"),
       mistakesList: document.getElementById("mistakes-list"),
-      wordBankList: document.getElementById("word-bank-list")
+      wordBankList: document.getElementById("word-bank-list"),
+      copyrightYear: document.getElementById("copyright-year")
     };
   }
 
@@ -661,6 +662,7 @@
     renderWordBank(elements);
     renderMistakes(elements);
     renderCompetition(elements);
+    elements.copyrightYear.textContent = new Date().getFullYear();
     loadBrowserVoices(elements);
     startNewRound(elements);
     showView(elements, "home");
