@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Spelling Bee INSE</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="hero" id="home">
+      <nav class="topbar" aria-label="Main navigation">
+        <a class="brand" href="#home" aria-label="Spelling Bee INSE home">
+          <span class="brand-mark" aria-hidden="true">SB</span>
+          <span>
+            <strong>Spelling Bee INSE</strong>
+            <small>Listen, Spell and Speak</small>
+          </span>
+        </a>
+        <div class="nav-actions">
+          <button type="button" data-view="practice">Practice Mode</button>
+          <button type="button" data-view="competition">Competition</button>
+          <button type="button" data-view="mistakes">Review Mistakes</button>
+          <button type="button" data-view="word-bank">Word Bank</button>
+        </div>
+      </nav>
+
+      <section class="hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">English vocabulary practice</p>
+          <h1>Listen carefully. Spell clearly. Win as a team.</h1>
+          <p>
+            A classroom-ready web app for listening, writing, speaking and spelling activities with instant feedback.
+          </p>
+          <div class="hero-buttons">
+            <button class="primary" type="button" data-view="practice">Start Practice</button>
+            <button class="secondary" type="button" data-view="competition">Start Competition</button>
+          </div>
+        </div>
+        <div class="bee-card" aria-label="App highlights">
+          <div class="bee-icon" aria-hidden="true">BEE</div>
+          <h2>Classroom MVP</h2>
+          <p>Word bank, speech synthesis, scoring, mistakes review, timer and team scoreboard.</p>
+        </div>
+      </section>
+    </header>
+
+    <main>
+      <section class="panel active" id="practice" aria-labelledby="practice-title">
+        <div class="section-heading">
+          <p class="eyebrow">Practice Mode</p>
+          <h2 id="practice-title">Listen & Write</h2>
+          <p>Select a category, unit and level. The app will avoid repeating words in the same round.</p>
+        </div>
+
+        <div class="controls-grid" aria-label="Practice filters">
+          <label>
+            Category
+            <select id="category-select"></select>
+          </label>
+          <label>
+            Unit
+            <select id="unit-select"></select>
+          </label>
+          <label>
+            Level
+            <select id="level-select"></select>
+          </label>
+          <button class="secondary" type="button" id="new-round-btn">New Round</button>
+        </div>
+
+        <article class="practice-card">
+          <div class="score-strip">
+            <span>Score: <strong id="score-value">0</strong></span>
+            <span>Correct: <strong id="correct-value">0</strong></span>
+            <span>Wrong: <strong id="wrong-value">0</strong></span>
+            <span>Progress: <strong id="progress-value">0/0</strong></span>
+          </div>
+
+          <div class="word-stage">
+            <p class="hint-label">Meaning</p>
+            <h3 id="meaning-display">Loading words...</h3>
+            <p id="example-display">Please wait while the word bank is loaded.</p>
+          </div>
+
+          <div class="listen-actions">
+            <button class="primary" type="button" id="listen-btn">Listen</button>
+            <button class="secondary" type="button" id="next-word-btn">Skip / Next Word</button>
+          </div>
+
+          <form class="answer-form" id="answer-form">
+            <label for="answer-input">Write the word you heard</label>
+            <div class="answer-row">
+              <input id="answer-input" autocomplete="off" placeholder="Type the English word">
+              <button class="primary" type="submit">Check</button>
+            </div>
+          </form>
+
+          <div class="feedback" id="feedback" role="status" aria-live="polite">Choose a word and press Listen.</div>
+        </article>
+      </section>
+
+      <section class="panel" id="spell-aloud" aria-labelledby="spell-title">
+        <div class="section-heading">
+          <p class="eyebrow">Speaking Practice</p>
+          <h2 id="spell-title">Spell Aloud</h2>
+          <p>Try automatic speech recognition or let the teacher validate manually.</p>
+        </div>
+        <div class="speaking-card">
+          <p>Current word: <strong id="speaking-word">No word selected</strong></p>
+          <button class="primary" type="button" id="speak-btn">Speak</button>
+          <p id="speech-result">Speech recognition result will appear here.</p>
+          <div class="manual-actions">
+            <button type="button" id="manual-speaking-correct">Correct Speaking</button>
+            <button type="button" id="manual-speaking-wrong">Incorrect Speaking</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="competition" aria-labelledby="competition-title">
+        <div class="section-heading">
+          <p class="eyebrow">Team Challenge</p>
+          <h2 id="competition-title">Spelling Bee Competition</h2>
+          <p>Create teams, run timed turns and award points for writing, speaking, sentence use and no-hint answers.</p>
+        </div>
+
+        <div class="competition-layout">
+          <aside class="team-setup">
+            <label>
+              Team name
+              <input id="team-name-input" placeholder="Team C">
+            </label>
+            <button type="button" id="add-team-btn">Add Team</button>
+            <button type="button" id="reset-competition-btn">Reset Competition</button>
+          </aside>
+
+          <article class="competition-card">
+            <div class="timer" aria-label="Competition timer">
+              <span id="timer-value">60</span>
+              <small>seconds</small>
+            </div>
+            <p>Current team: <strong id="current-team">Team A</strong></p>
+            <p>Competition word: <strong id="competition-word">Ready?</strong></p>
+            <div class="listen-actions">
+              <button class="primary" type="button" id="competition-word-btn">New Word</button>
+              <button class="secondary" type="button" id="competition-listen-btn">Listen</button>
+            </div>
+            <div class="points-grid">
+              <button type="button" data-points="10" data-reason="writing">Writing +10</button>
+              <button type="button" data-points="10" data-reason="speaking">Speaking +10</button>
+              <button type="button" data-points="5" data-reason="sentence">Sentence +5</button>
+              <button type="button" data-points="5" data-reason="no hint">No Hint +5</button>
+              <button type="button" id="competition-wrong-btn">Incorrect / Next Team</button>
+            </div>
+            <p id="winner-display" class="winner"></p>
+          </article>
+        </div>
+
+        <div class="scoreboard" id="scoreboard" aria-label="Team scoreboard"></div>
+      </section>
+
+      <section class="panel" id="mistakes" aria-labelledby="mistakes-title">
+        <div class="section-heading">
+          <p class="eyebrow">Review Mistakes</p>
+          <h2 id="mistakes-title">Words to Practice Again</h2>
+          <p>Incorrect answers are saved locally on this device.</p>
+        </div>
+        <div class="mistake-actions">
+          <button class="primary" type="button" id="practice-mistakes-btn">Practice Mistakes</button>
+          <button type="button" id="clear-mistakes-btn">Clear Mistakes</button>
+        </div>
+        <div class="word-list" id="mistakes-list"></div>
+      </section>
+
+      <section class="panel" id="word-bank" aria-labelledby="bank-title">
+        <div class="section-heading">
+          <p class="eyebrow">Word Bank</p>
+          <h2 id="bank-title">Vocabulary Loaded from JSON</h2>
+          <p>Use the filters above in practice mode to focus the round.</p>
+        </div>
+        <div class="word-list" id="word-bank-list"></div>
+      </section>
+    </main>
+
+    <footer>
+      <p>Spelling Bee INSE works with Web Speech API and LocalStorage. Use Chrome or Edge for best speaking support.</p>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "spelling-bee-inse",
+  "version": "1.0.0",
+  "description": "Web app educativa para practicar vocabulario en ingles con modos de escucha, deletreo y competencia.",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  },
+  "keywords": [
+    "spelling-bee",
+    "education",
+    "english"
+  ],
+  "author": "INSE",
+  "license": "MIT"
+}

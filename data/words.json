@@ -1,0 +1,182 @@
+[
+  {
+    "id": 1,
+    "word": "teacher",
+    "meaning": "docente",
+    "category": "school",
+    "unit": "Unit 1",
+    "level": "easy",
+    "example": "My teacher is kind."
+  },
+  {
+    "id": 2,
+    "word": "student",
+    "meaning": "estudiante",
+    "category": "school",
+    "unit": "Unit 1",
+    "level": "easy",
+    "example": "The student reads a book."
+  },
+  {
+    "id": 3,
+    "word": "library",
+    "meaning": "biblioteca",
+    "category": "school",
+    "unit": "Unit 1",
+    "level": "medium",
+    "example": "We study in the library."
+  },
+  {
+    "id": 4,
+    "word": "assignment",
+    "meaning": "tarea o asignacion",
+    "category": "school",
+    "unit": "Unit 1",
+    "level": "hard",
+    "example": "The assignment is due tomorrow."
+  },
+  {
+    "id": 5,
+    "word": "beautiful",
+    "meaning": "hermoso o hermosa",
+    "category": "adjectives",
+    "unit": "Unit 2",
+    "level": "hard",
+    "example": "The flower is beautiful."
+  },
+  {
+    "id": 6,
+    "word": "happy",
+    "meaning": "feliz",
+    "category": "adjectives",
+    "unit": "Unit 2",
+    "level": "easy",
+    "example": "I am happy today."
+  },
+  {
+    "id": 7,
+    "word": "careful",
+    "meaning": "cuidadoso",
+    "category": "adjectives",
+    "unit": "Unit 2",
+    "level": "medium",
+    "example": "Be careful with the glass."
+  },
+  {
+    "id": 8,
+    "word": "delicious",
+    "meaning": "delicioso",
+    "category": "adjectives",
+    "unit": "Unit 2",
+    "level": "hard",
+    "example": "The soup is delicious."
+  },
+  {
+    "id": 9,
+    "word": "breakfast",
+    "meaning": "desayuno",
+    "category": "food",
+    "unit": "Unit 3",
+    "level": "medium",
+    "example": "Breakfast is at seven o'clock."
+  },
+  {
+    "id": 10,
+    "word": "apple",
+    "meaning": "manzana",
+    "category": "food",
+    "unit": "Unit 3",
+    "level": "easy",
+    "example": "She eats an apple."
+  },
+  {
+    "id": 11,
+    "word": "vegetable",
+    "meaning": "vegetal",
+    "category": "food",
+    "unit": "Unit 3",
+    "level": "hard",
+    "example": "A carrot is a vegetable."
+  },
+  {
+    "id": 12,
+    "word": "sandwich",
+    "meaning": "sandwich",
+    "category": "food",
+    "unit": "Unit 3",
+    "level": "medium",
+    "example": "He made a cheese sandwich."
+  },
+  {
+    "id": 13,
+    "word": "family",
+    "meaning": "familia",
+    "category": "people",
+    "unit": "Unit 4",
+    "level": "easy",
+    "example": "My family lives nearby."
+  },
+  {
+    "id": 14,
+    "word": "neighbor",
+    "meaning": "vecino",
+    "category": "people",
+    "unit": "Unit 4",
+    "level": "medium",
+    "example": "Our neighbor has a dog."
+  },
+  {
+    "id": 15,
+    "word": "community",
+    "meaning": "comunidad",
+    "category": "people",
+    "unit": "Unit 4",
+    "level": "hard",
+    "example": "The community helps the school."
+  },
+  {
+    "id": 16,
+    "word": "friend",
+    "meaning": "amigo",
+    "category": "people",
+    "unit": "Unit 4",
+    "level": "easy",
+    "example": "My friend likes soccer."
+  },
+  {
+    "id": 17,
+    "word": "travel",
+    "meaning": "viajar",
+    "category": "verbs",
+    "unit": "Unit 5",
+    "level": "medium",
+    "example": "They travel by bus."
+  },
+  {
+    "id": 18,
+    "word": "write",
+    "meaning": "escribir",
+    "category": "verbs",
+    "unit": "Unit 5",
+    "level": "easy",
+    "example": "Please write your name."
+  },
+  {
+    "id": 19,
+    "word": "discover",
+    "meaning": "descubrir",
+    "category": "verbs",
+    "unit": "Unit 5",
+    "level": "hard",
+    "example": "Scientists discover new ideas."
+  },
+  {
+    "id": 20,
+    "word": "listen",
+    "meaning": "escuchar",
+    "category": "verbs",
+    "unit": "Unit 5",
+    "level": "easy",
+    "example": "Listen to the question."
+  }
+]
