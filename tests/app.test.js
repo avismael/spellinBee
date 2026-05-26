@@ -15,6 +15,7 @@ const {
   filterWords,
   getWinner,
   isCorrectAnswer,
+  isSpellingComplete,
   normalizeAnswer,
   readMistakes,
   readVoiceSettings,
@@ -133,6 +134,12 @@ test("builds spelling progress slots", () => {
     { letter: "a", value: "a", correct: true, filled: true },
     { letter: "t", value: "", correct: false, filled: false }
   ]);
+});
+
+test("detects completed spoken spelling", () => {
+  assert.equal(isSpellingComplete("cat", "see ay tea"), true);
+  assert.equal(isSpellingComplete("cat", "see ay"), false);
+  assert.equal(isSpellingComplete("cat", "see ay tea extra"), false);
 });
 
 test("explains speech recognition errors", () => {

@@ -21,6 +21,9 @@
     currentExampleRevealed: false,
     speakingPracticeWord: null,
     spokenLetters: "",
+    speakingWordIds: [],
+    speakingCompleted: false,
+    speakingAdvanceTimer: null,
     mistakes: [],
     teams: [
       { id: 1, name: "Team A", score: 0 },
@@ -123,6 +126,11 @@
       correct: spoken[index] === letter,
       filled: Boolean(spoken[index])
     }));
+  }
+
+  function isSpellingComplete(word, spokenLetters) {
+    const target = normalizeAnswer(word).replace(/[^a-z]/g, "");
+    return Boolean(target) && extractSpokenLetters(spokenLetters) === target;
   }
 
   function formatSpeechRecognitionError(error) {
@@ -378,6 +386,7 @@
   function refreshFilteredWords(elements) {
     state.filteredWords = filterWords(state.words, currentFilters(elements));
     state.roundWordIds = [];
+    state.speakingWordIds = [];
   }
 
   function renderPractice(elements) {
@@ -418,13 +427,30 @@
 
   function chooseSpeakingWord(elements) {
     const pool = state.filteredWords.length ? state.filteredWords : state.words;
-    const result = selectNextWord(pool, []);
+    const result = selectNextWord(pool, state.speakingWordIds);
     state.speakingPracticeWord = result.word;
+    state.speakingWordIds = result.usedIds;
     state.spokenLetters = "";
+    state.speakingCompleted = false;
+    if (state.speakingAdvanceTimer) {
+      window.clearTimeout(state.speakingAdvanceTimer);
+      state.speakingAdvanceTimer = null;
+    }
     elements.manualSpellingInput.value = "";
     elements.speechResult.textContent = "Listen to the word, then press Start Spelling.";
     renderSpeaking(elements);
     speakWord(state.speakingPracticeWord);
+  }
+
+  function completeSpeakingWord(elements, transcript) {
+    if (!state.speakingPracticeWord || state.speakingCompleted) return;
+
+    state.speakingCompleted = true;
+    elements.speechResult.textContent = transcript
+      ? `Correct! Completed from: ${transcript}. Next word coming up...`
+      : "Correct! Next word coming up...";
+    celebrateCorrectAnswer(state.speakingPracticeWord);
+    state.speakingAdvanceTimer = window.setTimeout(() => chooseSpeakingWord(elements), 1800);
   }
 
   function chooseNextPracticeWord(elements) {
@@ -611,13 +637,15 @@
       const transcript = Array.from(event.results).map((result) => result[0].transcript).join(" ");
       state.spokenLetters = extractSpokenLetters(transcript);
       renderSpeaking(elements);
-      const expected = state.speakingPracticeWord.word.replace(/\s+/g, "");
-      const correct = isCorrectAnswer(state.spokenLetters, expected);
-      elements.speechResult.textContent = correct
-        ? `Automatic result: correct (${transcript})`
-        : `Recognized: ${transcript}`;
+      if (isSpellingComplete(state.speakingPracticeWord.word, state.spokenLetters)) {
+        completeSpeakingWord(elements, transcript);
+        recognition.stop();
+        return;
+      }
+      elements.speechResult.textContent = `Recognized: ${transcript}`;
     };
     recognition.onerror = (event) => {
+      if (state.speakingCompleted) return;
       elements.speechResult.textContent = formatSpeechRecognitionError(event);
     };
     try {
@@ -694,9 +722,16 @@
     elements.manualSpellingInput.addEventListener("input", () => {
       state.spokenLetters = extractSpokenLetters(elements.manualSpellingInput.value);
       renderSpeaking(elements);
+      if (isSpellingComplete(state.speakingPracticeWord?.word, state.spokenLetters)) {
+        completeSpeakingWord(elements, elements.manualSpellingInput.value);
+      }
     });
     elements.manualSpeakingCorrect.addEventListener("click", () => {
-      elements.speechResult.textContent = "Teacher marked the speaking attempt as correct.";
+      if (state.speakingPracticeWord) {
+        completeSpeakingWord(elements);
+      } else {
+        elements.speechResult.textContent = "Choose a random word first.";
+      }
     });
     elements.manualSpeakingWrong.addEventListener("click", () => {
       elements.speechResult.textContent = "Teacher marked the speaking attempt as incorrect. Try again.";
@@ -784,6 +819,7 @@
       filterWords,
       getUniqueValues,
       getWinner,
+      isSpellingComplete,
       isCorrectAnswer,
       normalizeAnswer,
       readMistakes,
