@@ -4,6 +4,7 @@ const assert = require("node:assert/strict");
 const {
   addMistake,
   buildSpeechText,
+  claimResponder,
   findBestVoice,
   filterWords,
   getWinner,
@@ -58,6 +59,11 @@ test("scores competition teams immutably", () => {
   const updated = scoreCompetitionAnswer(teams, 1, 10);
   assert.equal(updated[1].score, 10);
   assert.equal(teams[1].score, 0);
+});
+
+test("locks the first team that buzzes", () => {
+  assert.equal(claimResponder(null, 1), 1);
+  assert.equal(claimResponder(0, 1), 0);
 });
 
 test("detects a unique competition winner", () => {

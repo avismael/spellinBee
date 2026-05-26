@@ -136,11 +136,13 @@
       </section>
 
       <section class="module view" id="competition" aria-labelledby="competition-title">
-        <div class="section-heading">
+        <div class="section-heading competition-heading">
           <p class="eyebrow">Team Challenge</p>
           <h2 id="competition-title">Spelling Bee Competition</h2>
-          <p>Create teams, run timed turns and award points for writing, speaking, sentence use and no-hint answers.</p>
+          <p>Project this screen, show turns clearly, and let teams press their buzzer when they are ready to answer.</p>
         </div>
+
+        <div class="scoreboard projector-scoreboard" id="scoreboard" aria-label="Team scoreboard"></div>
 
         <div class="competition-layout">
           <aside class="team-setup">
@@ -153,16 +155,27 @@
           </aside>
 
           <article class="competition-card">
-            <div class="timer" aria-label="Competition timer">
-              <span id="timer-value">60</span>
-              <small>seconds</small>
+            <div class="competition-status">
+              <div class="timer" aria-label="Competition timer">
+                <span id="timer-value">60</span>
+                <small>seconds</small>
+              </div>
+              <div>
+                <p class="turn-label">Turn</p>
+                <h3 id="current-team">Team A</h3>
+                <p id="responder-display" class="responder-display">Waiting for a team buzzer.</p>
+              </div>
             </div>
-            <p>Current team: <strong id="current-team">Team A</strong></p>
-            <p>Competition word: <strong id="competition-word">Ready?</strong></p>
+            <div class="competition-word-stage">
+              <p>Competition word</p>
+              <strong id="competition-word">Ready?</strong>
+            </div>
             <div class="listen-actions">
               <button class="primary" type="button" id="competition-word-btn">New Word</button>
               <button class="secondary" type="button" id="competition-listen-btn">Listen</button>
+              <button type="button" id="clear-buzzer-btn">Clear Buzzer</button>
             </div>
+            <div class="buzzer-board" id="buzzer-board" aria-label="Team buzzers"></div>
             <div class="points-grid">
               <button type="button" data-points="10" data-reason="writing">Writing +10</button>
               <button type="button" data-points="10" data-reason="speaking">Speaking +10</button>
@@ -173,8 +186,6 @@
             <p id="winner-display" class="winner"></p>
           </article>
         </div>
-
-        <div class="scoreboard" id="scoreboard" aria-label="Team scoreboard"></div>
       </section>
 
       <section class="module view" id="mistakes" aria-labelledby="mistakes-title">

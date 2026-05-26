@@ -97,10 +97,12 @@ footer {
 .score-strip,
 .competition-layout,
 .points-grid,
+.competition-status,
 .voice-controls,
 .answer-row,
 .scoreboard,
-.word-list {
+.word-list,
+.buzzer-board {
   min-width: 0;
 }
 
@@ -269,7 +271,9 @@ main {
 .controls-grid,
 .score-strip,
 .competition-layout,
-.points-grid {
+.points-grid,
+.competition-status,
+.buzzer-board {
   display: grid;
   gap: 1rem;
 }
@@ -374,8 +378,117 @@ button {
 }
 
 .competition-layout {
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: minmax(220px, 0.28fr) minmax(0, 1fr);
   align-items: start;
+}
+
+.competition-heading h2 {
+  font-size: clamp(2.4rem, 5vw, 5.4rem);
+}
+
+.projector-scoreboard {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  margin: 1.25rem 0;
+}
+
+.projector-scoreboard article {
+  display: grid;
+  gap: 0.25rem;
+  min-height: 150px;
+  background: #fff;
+}
+
+.projector-scoreboard article p,
+.projector-scoreboard article span {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.78rem;
+}
+
+.projector-scoreboard article h3 {
+  margin: 0;
+  font-size: clamp(1.6rem, 4vw, 2.8rem);
+  line-height: 1;
+}
+
+.projector-scoreboard article strong {
+  display: block;
+  font-size: clamp(3.4rem, 9vw, 6.8rem);
+  line-height: 0.9;
+}
+
+.projector-scoreboard article.active-team {
+  background: var(--honey);
+}
+
+.projector-scoreboard article.active-responder {
+  background: var(--blue);
+  color: #fff;
+}
+
+.projector-scoreboard article.active-responder p,
+.projector-scoreboard article.active-responder span {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.competition-status {
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.turn-label {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.competition-status h3 {
+  margin: 0;
+  font-size: clamp(2.2rem, 6vw, 4.8rem);
+  line-height: 0.95;
+}
+
+.responder-display {
+  margin: 0.6rem 0 0;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  background: var(--sky);
+  font-weight: 900;
+}
+
+.responder-display.locked {
+  background: #ddf9ec;
+  color: var(--green);
+}
+
+.competition-word-stage {
+  margin: 1rem 0;
+  padding: clamp(1rem, 3vw, 2rem);
+  border-radius: 1.6rem;
+  background: linear-gradient(135deg, var(--ink), #343354);
+  color: #fff;
+}
+
+.competition-word-stage p {
+  margin: 0;
+  color: var(--honey);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.competition-word-stage strong {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: clamp(2.4rem, 8vw, 6.6rem);
+  line-height: 0.92;
+  overflow-wrap: anywhere;
 }
 
 .timer {
@@ -401,16 +514,33 @@ button {
   margin-top: 1rem;
 }
 
+.buzzer-board {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  margin-top: 1rem;
+}
+
+.buzzer {
+  min-height: 6rem;
+  border-radius: 1.4rem;
+  background: var(--honey);
+  color: #241a00;
+  font-size: clamp(1.15rem, 3vw, 1.8rem);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.buzzer.locked {
+  background: var(--green);
+  color: #fff;
+  box-shadow: 0 18px 42px rgba(23, 143, 90, 0.35);
+}
+
 .scoreboard,
 .word-list {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1rem;
   margin-top: 1rem;
-}
-
-.scoreboard article.active-team {
-  background: var(--honey);
 }
 
 .word-list article {
@@ -487,6 +617,7 @@ footer {
   .controls-grid,
   .score-strip,
   .points-grid,
+  .competition-status,
   .voice-controls {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -561,6 +692,7 @@ footer {
   .controls-grid,
   .score-strip,
   .points-grid,
+  .competition-status,
   .voice-controls,
   .answer-row {
     grid-template-columns: 1fr;
@@ -596,6 +728,10 @@ footer {
   .timer {
     width: 6.4rem;
     height: 6.4rem;
+  }
+
+  .buzzer {
+    min-height: 5rem;
   }
 
   .timer span {
