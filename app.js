@@ -146,6 +146,8 @@
     return {
       views: document.querySelectorAll(".view"),
       navButtons: document.querySelectorAll("[data-view]"),
+      appNav: document.querySelector(".app-shell-nav"),
+      menuToggle: document.getElementById("menu-toggle"),
       categorySelect: document.getElementById("category-select"),
       unitSelect: document.getElementById("unit-select"),
       levelSelect: document.getElementById("level-select"),
@@ -366,6 +368,8 @@
   function showView(elements, viewId) {
     elements.views.forEach((view) => view.classList.toggle("active", view.id === viewId));
     elements.navButtons.forEach((button) => button.classList.toggle("current-view", button.dataset.view === viewId));
+    elements.appNav.classList.remove("menu-open");
+    elements.menuToggle.setAttribute("aria-expanded", "false");
     document.getElementById(viewId)?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
@@ -476,6 +480,10 @@
   }
 
   function bindEvents(elements) {
+    elements.menuToggle.addEventListener("click", () => {
+      const isOpen = elements.appNav.classList.toggle("menu-open");
+      elements.menuToggle.setAttribute("aria-expanded", String(isOpen));
+    });
     elements.navButtons.forEach((button) => button.addEventListener("click", () => showView(elements, button.dataset.view)));
     [elements.categorySelect, elements.unitSelect, elements.levelSelect].forEach((select) => {
       select.addEventListener("change", () => {

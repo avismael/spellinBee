@@ -17,11 +17,16 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-padding-top: 96px;
+}
+
 body {
   margin: 0;
   color: var(--ink);
   background: linear-gradient(135deg, #fff7c9 0%, #e9f7ff 46%, #f8efff 100%);
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 button,
@@ -86,6 +91,19 @@ footer {
   backdrop-filter: blur(18px);
 }
 
+.app-shell-nav,
+.hero-grid,
+.controls-grid,
+.score-strip,
+.competition-layout,
+.points-grid,
+.voice-controls,
+.answer-row,
+.scoreboard,
+.word-list {
+  min-width: 0;
+}
+
 .brand {
   display: inline-flex;
   align-items: center;
@@ -108,6 +126,10 @@ footer {
 .nav-actions .current-view {
   background: var(--ink);
   color: #fff;
+}
+
+.menu-toggle {
+  display: none;
 }
 
 .brand-mark {
@@ -186,6 +208,20 @@ footer {
   font-size: 1.2rem;
 }
 
+.hero-copy,
+.bee-card,
+.module,
+.practice-card,
+.speaking-card,
+.competition-card,
+.team-setup,
+.word-stage,
+.feedback,
+.word-list article,
+.scoreboard article {
+  min-width: 0;
+}
+
 .bee-card,
 .module,
 .practice-card,
@@ -257,6 +293,12 @@ select {
   padding: 0.9rem 1rem;
   background: #fff;
   color: var(--ink);
+}
+
+input,
+select,
+button {
+  max-width: 100%;
 }
 
 .practice-card,
@@ -385,6 +427,7 @@ select {
 .word-list p {
   margin: 0.25rem 0;
   color: var(--muted);
+  overflow-wrap: anywhere;
 }
 
 .winner {
@@ -408,6 +451,37 @@ footer {
 
   .app-shell-nav {
     display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+  }
+
+  .menu-toggle {
+    display: inline-flex;
+    justify-content: center;
+  }
+
+  .nav-actions {
+    display: none;
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    padding-top: 0.25rem;
+  }
+
+  .app-shell-nav.menu-open .nav-actions {
+    display: grid;
+  }
+
+  .nav-actions button {
+    width: 100%;
+  }
+
+  .hero {
+    min-height: auto;
+  }
+
+  .timer {
+    margin-left: 0;
   }
 
   .controls-grid,
@@ -419,6 +493,60 @@ footer {
 }
 
 @media (max-width: 560px) {
+  html {
+    scroll-padding-top: 82px;
+  }
+
+  .app-shell-nav {
+    gap: 0.75rem;
+    padding: 0.75rem 0.85rem;
+  }
+
+  .brand {
+    gap: 0.55rem;
+  }
+
+  .brand-mark {
+    width: 2.55rem;
+    height: 2.55rem;
+    border-radius: 0.85rem;
+  }
+
+  .brand strong {
+    display: block;
+    max-width: 11rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .brand small {
+    display: none;
+  }
+
+  .menu-toggle {
+    padding-inline: 0.9rem;
+  }
+
+  .nav-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .hero,
+  main {
+    padding-left: 0.85rem;
+    padding-right: 0.85rem;
+  }
+
+  .module,
+  .practice-card,
+  .speaking-card,
+  .competition-card,
+  .team-setup,
+  .bee-card {
+    border-radius: 1.25rem;
+  }
+
   .nav-actions button,
   .hero-buttons button,
   .listen-actions button,
@@ -439,6 +567,38 @@ footer {
   }
 
   .hero-copy h1 {
-    font-size: 3rem;
+    font-size: clamp(2.35rem, 15vw, 3.15rem);
+    letter-spacing: -0.055em;
+  }
+
+  .hero-copy p {
+    font-size: 1rem;
+  }
+
+  .bee-card {
+    min-height: auto;
+    padding: 1.25rem;
+  }
+
+  .bee-icon {
+    font-size: 3.5rem;
+  }
+
+  .section-heading h2 {
+    font-size: clamp(1.9rem, 11vw, 2.55rem);
+  }
+
+  .word-stage h3 {
+    font-size: clamp(1.9rem, 12vw, 3rem);
+    overflow-wrap: anywhere;
+  }
+
+  .timer {
+    width: 6.4rem;
+    height: 6.4rem;
+  }
+
+  .timer span {
+    font-size: 2.35rem;
   }
 }
