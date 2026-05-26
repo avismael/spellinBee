@@ -139,7 +139,7 @@
         <div class="section-heading competition-heading">
           <p class="eyebrow">Team Challenge</p>
           <h2 id="competition-title">Spelling Bee Competition</h2>
-          <p>Project this screen, show turns clearly, and let teams press their buzzer when they are ready to answer.</p>
+          <p>Project the board, keep the word hidden, give oral clues, and reveal the answer only after judging.</p>
         </div>
 
         <div class="scoreboard projector-scoreboard" id="scoreboard" aria-label="Team scoreboard"></div>
@@ -167,20 +167,40 @@
               </div>
             </div>
             <div class="competition-word-stage">
-              <p>Competition word</p>
+              <p id="competition-word-label">Word is hidden</p>
               <strong id="competition-word">Ready?</strong>
+            </div>
+            <div class="clue-grid" aria-label="Competition clues">
+              <article>
+                <span>Meaning</span>
+                <strong id="competition-meaning">Start a round to show the clue.</strong>
+              </article>
+              <article>
+                <span>Example sentence</span>
+                <strong id="competition-example">The example appears here.</strong>
+              </article>
+              <article>
+                <span>Level</span>
+                <strong id="competition-level">-</strong>
+              </article>
             </div>
             <div class="listen-actions">
               <button class="primary" type="button" id="competition-word-btn">New Word</button>
               <button class="secondary" type="button" id="competition-listen-btn">Listen</button>
+              <button type="button" id="competition-example-btn">Read Example</button>
+              <button type="button" id="reveal-word-btn">Reveal Word</button>
+              <button type="button" id="hide-word-btn">Hide Word</button>
               <button type="button" id="clear-buzzer-btn">Clear Buzzer</button>
             </div>
             <div class="buzzer-board" id="buzzer-board" aria-label="Team buzzers"></div>
-            <div class="points-grid">
-              <button type="button" data-points="10" data-reason="writing">Writing +10</button>
-              <button type="button" data-points="10" data-reason="speaking">Speaking +10</button>
-              <button type="button" data-points="5" data-reason="sentence">Sentence +5</button>
-              <button type="button" data-points="5" data-reason="no hint">No Hint +5</button>
+            <div class="judge-panel">
+              <p>Judge controls</p>
+              <div class="points-grid">
+                <button class="primary" type="button" data-points="10" data-reason="spelling">Correct Spelling +10</button>
+                <button type="button" data-points="5" data-reason="pronunciation">Good Pronunciation +5</button>
+                <button type="button" data-points="5" data-reason="sentence">Own Sentence +5</button>
+                <button type="button" data-points="5" data-reason="no hint">No Hint Bonus +5</button>
+              </div>
               <button type="button" id="competition-wrong-btn">Incorrect / Next Team</button>
             </div>
             <p id="winner-display" class="winner"></p>

@@ -98,11 +98,13 @@ footer {
 .competition-layout,
 .points-grid,
 .competition-status,
+.clue-grid,
 .voice-controls,
 .answer-row,
 .scoreboard,
 .word-list,
-.buzzer-board {
+.buzzer-board,
+.judge-panel {
   min-width: 0;
 }
 
@@ -273,6 +275,7 @@ main {
 .competition-layout,
 .points-grid,
 .competition-status,
+.clue-grid,
 .buzzer-board {
   display: grid;
   gap: 1rem;
@@ -491,6 +494,39 @@ button {
   overflow-wrap: anywhere;
 }
 
+.competition-word-stage strong::before {
+  content: "";
+}
+
+.clue-grid {
+  grid-template-columns: 1fr 1.4fr minmax(150px, 0.45fr);
+  margin: 1rem 0;
+}
+
+.clue-grid article,
+.judge-panel {
+  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.78);
+  padding: 1rem;
+}
+
+.clue-grid span,
+.judge-panel p {
+  display: block;
+  margin: 0 0 0.35rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.clue-grid strong {
+  display: block;
+  font-size: clamp(1rem, 2.2vw, 1.45rem);
+  line-height: 1.18;
+}
+
 .timer {
   width: 8rem;
   height: 8rem;
@@ -510,7 +546,11 @@ button {
 }
 
 .points-grid {
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0 0 0.75rem;
+}
+
+.judge-panel {
   margin-top: 1rem;
 }
 
@@ -618,6 +658,7 @@ footer {
   .score-strip,
   .points-grid,
   .competition-status,
+  .clue-grid,
   .voice-controls {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -693,6 +734,7 @@ footer {
   .score-strip,
   .points-grid,
   .competition-status,
+  .clue-grid,
   .voice-controls,
   .answer-row {
     grid-template-columns: 1fr;

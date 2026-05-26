@@ -5,6 +5,7 @@ const {
   addMistake,
   buildSpeechText,
   claimResponder,
+  formatCompetitionWord,
   findBestVoice,
   filterWords,
   getWinner,
@@ -64,6 +65,12 @@ test("scores competition teams immutably", () => {
 test("locks the first team that buzzes", () => {
   assert.equal(claimResponder(null, 1), 1);
   assert.equal(claimResponder(0, 1), 0);
+});
+
+test("hides competition word until revealed", () => {
+  assert.equal(formatCompetitionWord(null, false), "Ready?");
+  assert.equal(formatCompetitionWord({ word: "teacher" }, false), "Hidden word");
+  assert.equal(formatCompetitionWord({ word: "teacher" }, true), "teacher");
 });
 
 test("detects a unique competition winner", () => {
