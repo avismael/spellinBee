@@ -139,7 +139,7 @@
         <div class="section-heading competition-heading">
           <p class="eyebrow">Team Challenge</p>
           <h2 id="competition-title">Spelling Bee Competition</h2>
-          <p>Project the board, keep the word hidden, give oral clues, and reveal the answer only after judging.</p>
+          <p>Project the board, choose a word, press Your word is, and let the current team spell or write the answer.</p>
         </div>
 
         <div class="scoreboard projector-scoreboard" id="scoreboard" aria-label="Team scoreboard"></div>
@@ -163,7 +163,7 @@
               <div>
                 <p class="turn-label">Turn</p>
                 <h3 id="current-team">Team A</h3>
-                <p id="responder-display" class="responder-display">Waiting for a team buzzer.</p>
+                <p class="turn-instruction">Press Your word is for the current team.</p>
               </div>
             </div>
             <div class="competition-word-stage">
@@ -186,13 +186,11 @@
             </div>
             <div class="listen-actions">
               <button class="primary" type="button" id="competition-word-btn">New Word</button>
-              <button class="secondary" type="button" id="competition-listen-btn">Listen</button>
+              <button class="secondary" type="button" id="competition-listen-btn">Your word is...</button>
               <button type="button" id="competition-example-btn">Read Example</button>
               <button type="button" id="reveal-word-btn">Reveal Word</button>
               <button type="button" id="hide-word-btn">Hide Word</button>
-              <button type="button" id="clear-buzzer-btn">Clear Buzzer</button>
             </div>
-            <div class="buzzer-board" id="buzzer-board" aria-label="Team buzzers"></div>
             <div class="judge-panel">
               <p>Judge controls</p>
               <div class="points-grid">

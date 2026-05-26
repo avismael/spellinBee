@@ -23,7 +23,6 @@
       { id: 2, name: "Team B", score: 0 }
     ],
     currentTeamIndex: 0,
-    activeResponderIndex: null,
     competitionWord: null,
     competitionWordRevealed: false,
     timerId: null,
@@ -74,13 +73,13 @@
     return teams.map((team, index) => index === teamIndex ? { ...team, score: team.score + points } : team);
   }
 
-  function claimResponder(currentResponderIndex, requestedResponderIndex) {
-    return currentResponderIndex === null || currentResponderIndex === undefined ? requestedResponderIndex : currentResponderIndex;
-  }
-
   function formatCompetitionWord(word, revealed) {
     if (!word) return "Ready?";
     return revealed ? word.word : "Hidden word";
+  }
+
+  function buildCompetitionPrompt(word) {
+    return word ? `Your word is ${word.word}.` : "Choose a word first.";
   }
 
   function getWinner(teams) {
@@ -188,7 +187,6 @@
       resetCompetitionBtn: document.getElementById("reset-competition-btn"),
       timerValue: document.getElementById("timer-value"),
       currentTeam: document.getElementById("current-team"),
-      responderDisplay: document.getElementById("responder-display"),
       competitionWord: document.getElementById("competition-word"),
       competitionWordLabel: document.getElementById("competition-word-label"),
       competitionMeaning: document.getElementById("competition-meaning"),
@@ -200,11 +198,9 @@
       revealWordBtn: document.getElementById("reveal-word-btn"),
       hideWordBtn: document.getElementById("hide-word-btn"),
       competitionWrongBtn: document.getElementById("competition-wrong-btn"),
-      clearBuzzerBtn: document.getElementById("clear-buzzer-btn"),
       pointsButtons: document.querySelectorAll("[data-points]"),
       winnerDisplay: document.getElementById("winner-display"),
       scoreboard: document.getElementById("scoreboard"),
-      buzzerBoard: document.getElementById("buzzer-board"),
       practiceMistakesBtn: document.getElementById("practice-mistakes-btn"),
       clearMistakesBtn: document.getElementById("clear-mistakes-btn"),
       mistakesList: document.getElementById("mistakes-list"),
@@ -396,15 +392,11 @@
 
   function nextTeam() {
     state.currentTeamIndex = (state.currentTeamIndex + 1) % state.teams.length;
-    state.activeResponderIndex = null;
   }
 
   function renderCompetition(elements) {
     const team = state.teams[state.currentTeamIndex];
-    const responder = state.activeResponderIndex === null ? null : state.teams[state.activeResponderIndex];
     elements.currentTeam.textContent = team ? team.name : "No teams";
-    elements.responderDisplay.textContent = responder ? `${responder.name} buzzed first. Answer now.` : "Waiting for a team buzzer.";
-    elements.responderDisplay.classList.toggle("locked", Boolean(responder));
     elements.competitionWord.textContent = formatCompetitionWord(state.competitionWord, state.competitionWordRevealed);
     elements.competitionWordLabel.textContent = state.competitionWordRevealed ? "Answer revealed" : "Word is hidden";
     elements.competitionMeaning.textContent = state.competitionWord ? state.competitionWord.meaning : "Start a round to show the clue.";
@@ -412,24 +404,12 @@
     elements.competitionLevel.textContent = state.competitionWord ? `${state.competitionWord.category} | ${state.competitionWord.unit} | ${state.competitionWord.level}` : "-";
     elements.timerValue.textContent = state.secondsLeft;
     elements.scoreboard.innerHTML = "";
-    elements.buzzerBoard.innerHTML = "";
 
     state.teams.forEach((item, index) => {
       const card = document.createElement("article");
-      card.className = [index === state.currentTeamIndex ? "active-team" : "", index === state.activeResponderIndex ? "active-responder" : ""].filter(Boolean).join(" ");
+      card.className = index === state.currentTeamIndex ? "active-team" : "";
       card.innerHTML = `<p>${index === state.currentTeamIndex ? "Turn now" : "Waiting"}</p><h3>${item.name}</h3><strong>${item.score}</strong><span>points</span>`;
       elements.scoreboard.appendChild(card);
-
-      const buzzer = document.createElement("button");
-      buzzer.type = "button";
-      buzzer.className = index === state.activeResponderIndex ? "buzzer locked" : "buzzer";
-      buzzer.disabled = state.activeResponderIndex !== null && state.activeResponderIndex !== index;
-      buzzer.textContent = state.activeResponderIndex === index ? `${item.name} answers` : `${item.name} buzzer`;
-      buzzer.addEventListener("click", () => {
-        state.activeResponderIndex = claimResponder(state.activeResponderIndex, index);
-        renderCompetition(elements);
-      });
-      elements.buzzerBoard.appendChild(buzzer);
     });
 
     const winner = getWinner(state.teams);
@@ -439,7 +419,6 @@
   function startTimer(elements) {
     clearInterval(state.timerId);
     state.secondsLeft = 60;
-    state.activeResponderIndex = null;
     state.competitionWordRevealed = false;
     renderCompetition(elements);
     state.timerId = setInterval(() => {
@@ -465,8 +444,7 @@
   }
 
   function awardCompetitionPoints(elements, points) {
-    const scoringTeamIndex = state.activeResponderIndex === null ? state.currentTeamIndex : state.activeResponderIndex;
-    state.teams = scoreCompetitionAnswer(state.teams, scoringTeamIndex, points);
+    state.teams = scoreCompetitionAnswer(state.teams, state.currentTeamIndex, points);
     nextTeam();
     renderCompetition(elements);
   }
@@ -478,7 +456,6 @@
       { id: 2, name: "Team B", score: 0 }
     ];
     state.currentTeamIndex = 0;
-    state.activeResponderIndex = null;
     state.competitionWord = null;
     state.competitionWordRevealed = false;
     state.secondsLeft = 60;
@@ -571,7 +548,7 @@
     });
     elements.resetCompetitionBtn.addEventListener("click", () => resetCompetition(elements));
     elements.competitionWordBtn.addEventListener("click", () => chooseCompetitionWord(elements));
-    elements.competitionListenBtn.addEventListener("click", () => speakWord(state.competitionWord));
+    elements.competitionListenBtn.addEventListener("click", () => speak(buildCompetitionPrompt(state.competitionWord)));
     elements.competitionExampleBtn.addEventListener("click", () => speakWord(state.competitionWord, true));
     elements.revealWordBtn.addEventListener("click", () => {
       state.competitionWordRevealed = true;
@@ -579,10 +556,6 @@
     });
     elements.hideWordBtn.addEventListener("click", () => {
       state.competitionWordRevealed = false;
-      renderCompetition(elements);
-    });
-    elements.clearBuzzerBtn.addEventListener("click", () => {
-      state.activeResponderIndex = null;
       renderCompetition(elements);
     });
     elements.pointsButtons.forEach((button) => {
@@ -631,7 +604,7 @@
     module.exports = {
       addMistake,
       buildSpeechText,
-      claimResponder,
+      buildCompetitionPrompt,
       formatCompetitionWord,
       findBestVoice,
       filterWords,

@@ -103,7 +103,6 @@ footer {
 .answer-row,
 .scoreboard,
 .word-list,
-.buzzer-board,
 .judge-panel {
   min-width: 0;
 }
@@ -275,8 +274,7 @@ main {
 .competition-layout,
 .points-grid,
 .competition-status,
-.clue-grid,
-.buzzer-board {
+.clue-grid {
   display: grid;
   gap: 1rem;
 }
@@ -427,16 +425,6 @@ button {
   background: var(--honey);
 }
 
-.projector-scoreboard article.active-responder {
-  background: var(--blue);
-  color: #fff;
-}
-
-.projector-scoreboard article.active-responder p,
-.projector-scoreboard article.active-responder span {
-  color: rgba(255, 255, 255, 0.82);
-}
-
 .competition-status {
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
@@ -457,17 +445,12 @@ button {
   line-height: 0.95;
 }
 
-.responder-display {
+.turn-instruction {
   margin: 0.6rem 0 0;
   padding: 0.75rem 1rem;
   border-radius: 1rem;
   background: var(--sky);
   font-weight: 900;
-}
-
-.responder-display.locked {
-  background: #ddf9ec;
-  color: var(--green);
 }
 
 .competition-word-stage {
@@ -552,27 +535,6 @@ button {
 
 .judge-panel {
   margin-top: 1rem;
-}
-
-.buzzer-board {
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  margin-top: 1rem;
-}
-
-.buzzer {
-  min-height: 6rem;
-  border-radius: 1.4rem;
-  background: var(--honey);
-  color: #241a00;
-  font-size: clamp(1.15rem, 3vw, 1.8rem);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.buzzer.locked {
-  background: var(--green);
-  color: #fff;
-  box-shadow: 0 18px 42px rgba(23, 143, 90, 0.35);
 }
 
 .scoreboard,
@@ -770,10 +732,6 @@ footer {
   .timer {
     width: 6.4rem;
     height: 6.4rem;
-  }
-
-  .buzzer {
-    min-height: 5rem;
   }
 
   .timer span {

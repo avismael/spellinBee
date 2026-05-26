@@ -3,8 +3,8 @@ const assert = require("node:assert/strict");
 
 const {
   addMistake,
+  buildCompetitionPrompt,
   buildSpeechText,
-  claimResponder,
   formatCompetitionWord,
   findBestVoice,
   filterWords,
@@ -62,15 +62,15 @@ test("scores competition teams immutably", () => {
   assert.equal(teams[1].score, 0);
 });
 
-test("locks the first team that buzzes", () => {
-  assert.equal(claimResponder(null, 1), 1);
-  assert.equal(claimResponder(0, 1), 0);
-});
-
 test("hides competition word until revealed", () => {
   assert.equal(formatCompetitionWord(null, false), "Ready?");
   assert.equal(formatCompetitionWord({ word: "teacher" }, false), "Hidden word");
   assert.equal(formatCompetitionWord({ word: "teacher" }, true), "teacher");
+});
+
+test("builds competition prompt for the current word", () => {
+  assert.equal(buildCompetitionPrompt(null), "Choose a word first.");
+  assert.equal(buildCompetitionPrompt({ word: "teacher" }), "Your word is teacher.");
 });
 
 test("detects a unique competition winner", () => {
