@@ -184,15 +184,34 @@ footer {
   min-height: calc(100vh - 92px);
 }
 
+.voice-settings {
+  margin: 0.85rem 0;
+}
+
+.voice-settings summary {
+  width: fit-content;
+  border-radius: 999px;
+  padding: 0.62rem 0.9rem;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 6px 16px rgba(27, 27, 41, 0.1);
+  cursor: pointer;
+  font-weight: 900;
+}
+
 .voice-controls {
   display: grid;
   grid-template-columns: minmax(220px, 1fr) minmax(180px, 0.45fr) auto;
   gap: 0.75rem;
   align-items: end;
-  margin: 0.85rem 0;
+  margin-top: 0.75rem;
   padding: 0.8rem;
   border-radius: 1rem;
   background: rgba(255, 255, 255, 0.72);
+}
+
+.voice-test-actions {
+  display: flex;
+  gap: 0.5rem;
 }
 
 .hero-grid {
@@ -714,6 +733,10 @@ footer {
 
   .nav-actions {
     grid-template-columns: 1fr;
+  }
+
+  .voice-test-actions {
+    flex-direction: column;
   }
 
   .hero,

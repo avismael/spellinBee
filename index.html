@@ -98,19 +98,25 @@
             <button class="secondary" type="button" id="next-word-btn">Skip / Next Word</button>
           </div>
 
-          <div class="voice-controls" aria-label="Voice settings">
-            <label>
-              Voice
-              <select id="voice-select">
-                <option value="">Best available English voice</option>
-              </select>
-            </label>
-            <label>
-              Speed
-              <input id="voice-rate" type="range" min="0.65" max="1" value="0.78" step="0.01">
-            </label>
-            <button type="button" id="test-voice-btn">Test Voice</button>
-          </div>
+          <details class="voice-settings">
+            <summary>Voice settings</summary>
+            <div class="voice-controls" aria-label="Voice settings">
+              <label>
+                Voice
+                <select id="voice-select">
+                  <option value="">Best available English voice</option>
+                </select>
+              </label>
+              <label>
+                Speed
+                <input id="voice-rate" type="range" min="0.65" max="1" value="0.78" step="0.01">
+              </label>
+              <div class="voice-test-actions">
+                <button type="button" id="voice-listen-btn">Listen</button>
+                <button type="button" id="test-voice-btn">Test Voice</button>
+              </div>
+            </div>
+          </details>
 
           <form class="answer-form" id="answer-form">
             <label for="answer-input">Write the word you heard</label>

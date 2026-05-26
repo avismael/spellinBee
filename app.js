@@ -178,6 +178,7 @@
       nextWordBtn: document.getElementById("next-word-btn"),
       voiceSelect: document.getElementById("voice-select"),
       voiceRate: document.getElementById("voice-rate"),
+      voiceListenBtn: document.getElementById("voice-listen-btn"),
       testVoiceBtn: document.getElementById("test-voice-btn"),
       answerForm: document.getElementById("answer-form"),
       answerInput: document.getElementById("answer-input"),
@@ -588,6 +589,7 @@
       state.voiceRate = Number(elements.voiceRate.value);
       writeVoiceSettings(window.localStorage, { selectedVoiceName: state.selectedVoiceName, voiceRate: state.voiceRate });
     });
+    elements.voiceListenBtn.addEventListener("click", () => speakWord(state.currentWord));
     elements.testVoiceBtn.addEventListener("click", () => speak("Beautiful. My teacher is kind."));
     elements.nextWordBtn.addEventListener("click", () => {
       chooseNextPracticeWord(elements);
