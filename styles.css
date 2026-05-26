@@ -211,11 +211,6 @@ footer {
   background: rgba(255, 255, 255, 0.72);
 }
 
-.voice-test-actions {
-  display: flex;
-  gap: 0.5rem;
-}
-
 .hero-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
@@ -738,10 +733,6 @@ footer {
 
   .nav-actions {
     grid-template-columns: 1fr;
-  }
-
-  .voice-test-actions {
-    flex-direction: column;
   }
 
   .hero,
