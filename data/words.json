@@ -19,6 +19,33 @@
   },
   {
     "id": 3,
+    "word": "classroom",
+    "meaning": "salon de clase",
+    "category": "school",
+    "unit": "Unit 1",
+    "level": "easy",
+    "example": "The classroom is clean."
+  },
+  {
+    "id": 4,
+    "word": "pencil",
+    "meaning": "lapiz",
+    "category": "school",
+    "unit": "Unit 1",
+    "level": "easy",
+    "example": "I need a pencil for the test."
+  },
+  {
+    "id": 5,
+    "word": "notebook",
+    "meaning": "cuaderno",
+    "category": "school",
+    "unit": "Unit 1",
+    "level": "easy",
+    "example": "She writes in her notebook."
+  },
+  {
+    "id": 6,
     "word": "library",
     "meaning": "biblioteca",
     "category": "school",
@@ -27,7 +54,43 @@
     "example": "We study in the library."
   },
   {
-    "id": 4,
+    "id": 7,
+    "word": "subject",
+    "meaning": "materia escolar",
+    "category": "school",
+    "unit": "Unit 1",
+    "level": "medium",
+    "example": "Science is my favorite subject."
+  },
+  {
+    "id": 8,
+    "word": "schedule",
+    "meaning": "horario",
+    "category": "school",
+    "unit": "Unit 1",
+    "level": "medium",
+    "example": "Our schedule starts at seven."
+  },
+  {
+    "id": 9,
+    "word": "principal",
+    "meaning": "rector o director",
+    "category": "school",
+    "unit": "Unit 1",
+    "level": "medium",
+    "example": "The principal welcomed the students."
+  },
+  {
+    "id": 10,
+    "word": "homework",
+    "meaning": "tarea",
+    "category": "school",
+    "unit": "Unit 1",
+    "level": "medium",
+    "example": "I finished my homework early."
+  },
+  {
+    "id": 11,
     "word": "assignment",
     "meaning": "tarea o asignacion",
     "category": "school",
@@ -36,16 +99,43 @@
     "example": "The assignment is due tomorrow."
   },
   {
-    "id": 5,
-    "word": "beautiful",
-    "meaning": "hermoso o hermosa",
-    "category": "adjectives",
-    "unit": "Unit 2",
+    "id": 12,
+    "word": "attendance",
+    "meaning": "asistencia",
+    "category": "school",
+    "unit": "Unit 1",
     "level": "hard",
-    "example": "The flower is beautiful."
+    "example": "The teacher checks attendance every day."
   },
   {
-    "id": 6,
+    "id": 13,
+    "word": "knowledge",
+    "meaning": "conocimiento",
+    "category": "school",
+    "unit": "Unit 1",
+    "level": "hard",
+    "example": "Reading increases your knowledge."
+  },
+  {
+    "id": 14,
+    "word": "dictionary",
+    "meaning": "diccionario",
+    "category": "school",
+    "unit": "Unit 1",
+    "level": "hard",
+    "example": "Use a dictionary to find the meaning."
+  },
+  {
+    "id": 15,
+    "word": "examination",
+    "meaning": "examen",
+    "category": "school",
+    "unit": "Unit 1",
+    "level": "hard",
+    "example": "The final examination is next week."
+  },
+  {
+    "id": 16,
     "word": "happy",
     "meaning": "feliz",
     "category": "adjectives",
@@ -54,7 +144,43 @@
     "example": "I am happy today."
   },
   {
-    "id": 7,
+    "id": 17,
+    "word": "small",
+    "meaning": "pequeno",
+    "category": "adjectives",
+    "unit": "Unit 2",
+    "level": "easy",
+    "example": "The cat is small."
+  },
+  {
+    "id": 18,
+    "word": "strong",
+    "meaning": "fuerte",
+    "category": "adjectives",
+    "unit": "Unit 2",
+    "level": "easy",
+    "example": "He is a strong athlete."
+  },
+  {
+    "id": 19,
+    "word": "young",
+    "meaning": "joven",
+    "category": "adjectives",
+    "unit": "Unit 2",
+    "level": "easy",
+    "example": "The young girl sings well."
+  },
+  {
+    "id": 20,
+    "word": "clean",
+    "meaning": "limpio",
+    "category": "adjectives",
+    "unit": "Unit 2",
+    "level": "easy",
+    "example": "The room is clean."
+  },
+  {
+    "id": 21,
     "word": "careful",
     "meaning": "cuidadoso",
     "category": "adjectives",
@@ -63,7 +189,52 @@
     "example": "Be careful with the glass."
   },
   {
-    "id": 8,
+    "id": 22,
+    "word": "friendly",
+    "meaning": "amable",
+    "category": "adjectives",
+    "unit": "Unit 2",
+    "level": "medium",
+    "example": "Our neighbors are friendly."
+  },
+  {
+    "id": 23,
+    "word": "healthy",
+    "meaning": "saludable",
+    "category": "adjectives",
+    "unit": "Unit 2",
+    "level": "medium",
+    "example": "A healthy breakfast gives you energy."
+  },
+  {
+    "id": 24,
+    "word": "nervous",
+    "meaning": "nervioso",
+    "category": "adjectives",
+    "unit": "Unit 2",
+    "level": "medium",
+    "example": "She was nervous before the contest."
+  },
+  {
+    "id": 25,
+    "word": "polite",
+    "meaning": "educado o cortes",
+    "category": "adjectives",
+    "unit": "Unit 2",
+    "level": "medium",
+    "example": "Please be polite to visitors."
+  },
+  {
+    "id": 26,
+    "word": "beautiful",
+    "meaning": "hermoso o hermosa",
+    "category": "adjectives",
+    "unit": "Unit 2",
+    "level": "hard",
+    "example": "The flower is beautiful."
+  },
+  {
+    "id": 27,
     "word": "delicious",
     "meaning": "delicioso",
     "category": "adjectives",
@@ -72,16 +243,34 @@
     "example": "The soup is delicious."
   },
   {
-    "id": 9,
-    "word": "breakfast",
-    "meaning": "desayuno",
-    "category": "food",
-    "unit": "Unit 3",
-    "level": "medium",
-    "example": "Breakfast is at seven o'clock."
+    "id": 28,
+    "word": "comfortable",
+    "meaning": "comodo",
+    "category": "adjectives",
+    "unit": "Unit 2",
+    "level": "hard",
+    "example": "This chair is comfortable."
   },
   {
-    "id": 10,
+    "id": 29,
+    "word": "responsible",
+    "meaning": "responsable",
+    "category": "adjectives",
+    "unit": "Unit 2",
+    "level": "hard",
+    "example": "A responsible student arrives on time."
+  },
+  {
+    "id": 30,
+    "word": "successful",
+    "meaning": "exitoso",
+    "category": "adjectives",
+    "unit": "Unit 2",
+    "level": "hard",
+    "example": "Practice helps you become successful."
+  },
+  {
+    "id": 31,
     "word": "apple",
     "meaning": "manzana",
     "category": "food",
@@ -90,16 +279,52 @@
     "example": "She eats an apple."
   },
   {
-    "id": 11,
-    "word": "vegetable",
-    "meaning": "vegetal",
+    "id": 32,
+    "word": "bread",
+    "meaning": "pan",
     "category": "food",
     "unit": "Unit 3",
-    "level": "hard",
-    "example": "A carrot is a vegetable."
+    "level": "easy",
+    "example": "I want bread with butter."
   },
   {
-    "id": 12,
+    "id": 33,
+    "word": "water",
+    "meaning": "agua",
+    "category": "food",
+    "unit": "Unit 3",
+    "level": "easy",
+    "example": "Drink water after exercise."
+  },
+  {
+    "id": 34,
+    "word": "rice",
+    "meaning": "arroz",
+    "category": "food",
+    "unit": "Unit 3",
+    "level": "easy",
+    "example": "Rice is part of lunch."
+  },
+  {
+    "id": 35,
+    "word": "chicken",
+    "meaning": "pollo",
+    "category": "food",
+    "unit": "Unit 3",
+    "level": "easy",
+    "example": "We cooked chicken for dinner."
+  },
+  {
+    "id": 36,
+    "word": "breakfast",
+    "meaning": "desayuno",
+    "category": "food",
+    "unit": "Unit 3",
+    "level": "medium",
+    "example": "Breakfast is at seven o'clock."
+  },
+  {
+    "id": 37,
     "word": "sandwich",
     "meaning": "sandwich",
     "category": "food",
@@ -108,7 +333,79 @@
     "example": "He made a cheese sandwich."
   },
   {
-    "id": 13,
+    "id": 38,
+    "word": "dessert",
+    "meaning": "postre",
+    "category": "food",
+    "unit": "Unit 3",
+    "level": "medium",
+    "example": "Fruit is a healthy dessert."
+  },
+  {
+    "id": 39,
+    "word": "kitchen",
+    "meaning": "cocina",
+    "category": "food",
+    "unit": "Unit 3",
+    "level": "medium",
+    "example": "My father is in the kitchen."
+  },
+  {
+    "id": 40,
+    "word": "flavor",
+    "meaning": "sabor",
+    "category": "food",
+    "unit": "Unit 3",
+    "level": "medium",
+    "example": "This juice has a sweet flavor."
+  },
+  {
+    "id": 41,
+    "word": "vegetable",
+    "meaning": "vegetal",
+    "category": "food",
+    "unit": "Unit 3",
+    "level": "hard",
+    "example": "A carrot is a vegetable."
+  },
+  {
+    "id": 42,
+    "word": "ingredient",
+    "meaning": "ingrediente",
+    "category": "food",
+    "unit": "Unit 3",
+    "level": "hard",
+    "example": "Sugar is one ingredient in the cake."
+  },
+  {
+    "id": 43,
+    "word": "restaurant",
+    "meaning": "restaurante",
+    "category": "food",
+    "unit": "Unit 3",
+    "level": "hard",
+    "example": "The restaurant opens at noon."
+  },
+  {
+    "id": 44,
+    "word": "nutrition",
+    "meaning": "nutricion",
+    "category": "food",
+    "unit": "Unit 3",
+    "level": "hard",
+    "example": "Nutrition is important for teenagers."
+  },
+  {
+    "id": 45,
+    "word": "appetite",
+    "meaning": "apetito",
+    "category": "food",
+    "unit": "Unit 3",
+    "level": "hard",
+    "example": "The long walk gave me an appetite."
+  },
+  {
+    "id": 46,
     "word": "family",
     "meaning": "familia",
     "category": "people",
@@ -117,25 +414,7 @@
     "example": "My family lives nearby."
   },
   {
-    "id": 14,
-    "word": "neighbor",
-    "meaning": "vecino",
-    "category": "people",
-    "unit": "Unit 4",
-    "level": "medium",
-    "example": "Our neighbor has a dog."
-  },
-  {
-    "id": 15,
-    "word": "community",
-    "meaning": "comunidad",
-    "category": "people",
-    "unit": "Unit 4",
-    "level": "hard",
-    "example": "The community helps the school."
-  },
-  {
-    "id": 16,
+    "id": 47,
     "word": "friend",
     "meaning": "amigo",
     "category": "people",
@@ -144,16 +423,124 @@
     "example": "My friend likes soccer."
   },
   {
-    "id": 17,
-    "word": "travel",
-    "meaning": "viajar",
-    "category": "verbs",
-    "unit": "Unit 5",
-    "level": "medium",
-    "example": "They travel by bus."
+    "id": 48,
+    "word": "mother",
+    "meaning": "madre",
+    "category": "people",
+    "unit": "Unit 4",
+    "level": "easy",
+    "example": "My mother works at a school."
   },
   {
-    "id": 18,
+    "id": 49,
+    "word": "father",
+    "meaning": "padre",
+    "category": "people",
+    "unit": "Unit 4",
+    "level": "easy",
+    "example": "Her father drives a taxi."
+  },
+  {
+    "id": 50,
+    "word": "person",
+    "meaning": "persona",
+    "category": "people",
+    "unit": "Unit 4",
+    "level": "easy",
+    "example": "A kind person helps others."
+  },
+  {
+    "id": 51,
+    "word": "neighbor",
+    "meaning": "vecino",
+    "category": "people",
+    "unit": "Unit 4",
+    "level": "medium",
+    "example": "Our neighbor has a dog."
+  },
+  {
+    "id": 52,
+    "word": "cousin",
+    "meaning": "primo o prima",
+    "category": "people",
+    "unit": "Unit 4",
+    "level": "medium",
+    "example": "My cousin lives in another city."
+  },
+  {
+    "id": 53,
+    "word": "classmate",
+    "meaning": "companero de clase",
+    "category": "people",
+    "unit": "Unit 4",
+    "level": "medium",
+    "example": "A classmate helped me study."
+  },
+  {
+    "id": 54,
+    "word": "visitor",
+    "meaning": "visitante",
+    "category": "people",
+    "unit": "Unit 4",
+    "level": "medium",
+    "example": "The visitor asked for directions."
+  },
+  {
+    "id": 55,
+    "word": "customer",
+    "meaning": "cliente",
+    "category": "people",
+    "unit": "Unit 4",
+    "level": "medium",
+    "example": "The customer bought a notebook."
+  },
+  {
+    "id": 56,
+    "word": "community",
+    "meaning": "comunidad",
+    "category": "people",
+    "unit": "Unit 4",
+    "level": "hard",
+    "example": "The community helps the school."
+  },
+  {
+    "id": 57,
+    "word": "relative",
+    "meaning": "pariente",
+    "category": "people",
+    "unit": "Unit 4",
+    "level": "hard",
+    "example": "A relative visited us yesterday."
+  },
+  {
+    "id": 58,
+    "word": "teenager",
+    "meaning": "adolescente",
+    "category": "people",
+    "unit": "Unit 4",
+    "level": "hard",
+    "example": "The teenager joined the club."
+  },
+  {
+    "id": 59,
+    "word": "volunteer",
+    "meaning": "voluntario",
+    "category": "people",
+    "unit": "Unit 4",
+    "level": "hard",
+    "example": "A volunteer cleaned the park."
+  },
+  {
+    "id": 60,
+    "word": "citizen",
+    "meaning": "ciudadano",
+    "category": "people",
+    "unit": "Unit 4",
+    "level": "hard",
+    "example": "Every citizen has responsibilities."
+  },
+  {
+    "id": 61,
     "word": "write",
     "meaning": "escribir",
     "category": "verbs",
@@ -162,7 +549,88 @@
     "example": "Please write your name."
   },
   {
-    "id": 19,
+    "id": 62,
+    "word": "listen",
+    "meaning": "escuchar",
+    "category": "verbs",
+    "unit": "Unit 5",
+    "level": "easy",
+    "example": "Listen to the question."
+  },
+  {
+    "id": 63,
+    "word": "speak",
+    "meaning": "hablar",
+    "category": "verbs",
+    "unit": "Unit 5",
+    "level": "easy",
+    "example": "Speak clearly during the contest."
+  },
+  {
+    "id": 64,
+    "word": "read",
+    "meaning": "leer",
+    "category": "verbs",
+    "unit": "Unit 5",
+    "level": "easy",
+    "example": "Read the instructions first."
+  },
+  {
+    "id": 65,
+    "word": "learn",
+    "meaning": "aprender",
+    "category": "verbs",
+    "unit": "Unit 5",
+    "level": "easy",
+    "example": "We learn new words every week."
+  },
+  {
+    "id": 66,
+    "word": "travel",
+    "meaning": "viajar",
+    "category": "verbs",
+    "unit": "Unit 5",
+    "level": "medium",
+    "example": "They travel by bus."
+  },
+  {
+    "id": 67,
+    "word": "prepare",
+    "meaning": "preparar",
+    "category": "verbs",
+    "unit": "Unit 5",
+    "level": "medium",
+    "example": "Students prepare for the spelling bee."
+  },
+  {
+    "id": 68,
+    "word": "practice",
+    "meaning": "practicar",
+    "category": "verbs",
+    "unit": "Unit 5",
+    "level": "medium",
+    "example": "Practice improves your pronunciation."
+  },
+  {
+    "id": 69,
+    "word": "answer",
+    "meaning": "responder",
+    "category": "verbs",
+    "unit": "Unit 5",
+    "level": "medium",
+    "example": "Raise your hand to answer."
+  },
+  {
+    "id": 70,
+    "word": "explain",
+    "meaning": "explicar",
+    "category": "verbs",
+    "unit": "Unit 5",
+    "level": "medium",
+    "example": "Can you explain the rule?"
+  },
+  {
+    "id": 71,
     "word": "discover",
     "meaning": "descubrir",
     "category": "verbs",
@@ -171,12 +639,39 @@
     "example": "Scientists discover new ideas."
   },
   {
-    "id": 20,
-    "word": "listen",
-    "meaning": "escuchar",
+    "id": 72,
+    "word": "improve",
+    "meaning": "mejorar",
     "category": "verbs",
     "unit": "Unit 5",
-    "level": "easy",
-    "example": "Listen to the question."
+    "level": "hard",
+    "example": "Daily reading can improve your vocabulary."
+  },
+  {
+    "id": 73,
+    "word": "communicate",
+    "meaning": "comunicar",
+    "category": "verbs",
+    "unit": "Unit 5",
+    "level": "hard",
+    "example": "People communicate in many languages."
+  },
+  {
+    "id": 74,
+    "word": "participate",
+    "meaning": "participar",
+    "category": "verbs",
+    "unit": "Unit 5",
+    "level": "hard",
+    "example": "All teams participate in the final round."
+  },
+  {
+    "id": 75,
+    "word": "concentrate",
+    "meaning": "concentrarse",
+    "category": "verbs",
+    "unit": "Unit 5",
+    "level": "hard",
+    "example": "Concentrate before you spell the word."
   }
 ]
