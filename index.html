@@ -83,12 +83,18 @@
           <div class="word-stage">
             <p class="hint-label">Meaning</p>
             <h3 id="meaning-display">Loading words...</h3>
+            <p class="hint-label">Word</p>
+            <p id="practice-word-display">Hidden word</p>
+            <p class="hint-label">Phrase</p>
             <p id="example-display">Please wait while the word bank is loaded.</p>
           </div>
 
           <div class="listen-actions">
             <button class="primary" type="button" id="listen-btn">Listen</button>
             <button type="button" id="listen-context-btn">Listen + Example</button>
+            <button type="button" id="reveal-practice-word-btn">Reveal Word</button>
+            <button type="button" id="reveal-practice-example-btn">Reveal Phrase</button>
+            <button type="button" id="hide-practice-clues-btn">Hide Word/Phrase</button>
             <button class="secondary" type="button" id="next-word-btn">Skip / Next Word</button>
           </div>
 
@@ -177,7 +183,7 @@
               </article>
               <article>
                 <span>Example sentence</span>
-                <strong id="competition-example">The example appears here.</strong>
+                <strong id="competition-example">Hidden phrase</strong>
               </article>
               <article>
                 <span>Level</span>
@@ -189,6 +195,7 @@
               <button class="secondary" type="button" id="competition-listen-btn">Your word is...</button>
               <button type="button" id="competition-example-btn">Read Example</button>
               <button type="button" id="reveal-word-btn">Reveal Word</button>
+              <button type="button" id="reveal-example-btn">Reveal Phrase</button>
               <button type="button" id="hide-word-btn">Hide Word</button>
             </div>
             <div class="judge-panel">

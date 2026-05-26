@@ -17,6 +17,8 @@
     correct: 0,
     wrong: 0,
     totalAnswered: 0,
+    currentWordRevealed: false,
+    currentExampleRevealed: false,
     mistakes: [],
     teams: [
       { id: 1, name: "Team A", score: 0 },
@@ -25,6 +27,7 @@
     currentTeamIndex: 0,
     competitionWord: null,
     competitionWordRevealed: false,
+    competitionExampleRevealed: false,
     timerId: null,
     secondsLeft: 60,
     voices: [],
@@ -76,6 +79,10 @@
   function formatCompetitionWord(word, revealed) {
     if (!word) return "Ready?";
     return revealed ? word.word : "Hidden word";
+  }
+
+  function formatHiddenValue(value, revealed, hiddenText) {
+    return value && revealed ? value : hiddenText;
   }
 
   function buildCompetitionPrompt(word) {
@@ -172,7 +179,11 @@
       answerInput: document.getElementById("answer-input"),
       feedback: document.getElementById("feedback"),
       meaningDisplay: document.getElementById("meaning-display"),
+      practiceWordDisplay: document.getElementById("practice-word-display"),
       exampleDisplay: document.getElementById("example-display"),
+      revealPracticeWordBtn: document.getElementById("reveal-practice-word-btn"),
+      revealPracticeExampleBtn: document.getElementById("reveal-practice-example-btn"),
+      hidePracticeCluesBtn: document.getElementById("hide-practice-clues-btn"),
       scoreValue: document.getElementById("score-value"),
       correctValue: document.getElementById("correct-value"),
       wrongValue: document.getElementById("wrong-value"),
@@ -196,6 +207,7 @@
       competitionListenBtn: document.getElementById("competition-listen-btn"),
       competitionExampleBtn: document.getElementById("competition-example-btn"),
       revealWordBtn: document.getElementById("reveal-word-btn"),
+      revealExampleBtn: document.getElementById("reveal-example-btn"),
       hideWordBtn: document.getElementById("hide-word-btn"),
       competitionWrongBtn: document.getElementById("competition-wrong-btn"),
       pointsButtons: document.querySelectorAll("[data-points]"),
@@ -297,13 +309,15 @@
 
     if (!state.currentWord) {
       elements.meaningDisplay.textContent = "No words available";
+      elements.practiceWordDisplay.textContent = "Hidden word";
       elements.exampleDisplay.textContent = "Change the filters or add more words to data/words.json.";
       elements.speakingWord.textContent = "No word selected";
       return;
     }
 
     elements.meaningDisplay.textContent = state.currentWord.meaning;
-    elements.exampleDisplay.textContent = state.currentWord.example;
+    elements.practiceWordDisplay.textContent = formatHiddenValue(state.currentWord.word, state.currentWordRevealed, "Hidden word");
+    elements.exampleDisplay.textContent = formatHiddenValue(state.currentWord.example, state.currentExampleRevealed, "Hidden phrase");
     elements.speakingWord.textContent = state.currentWord.word;
   }
 
@@ -311,6 +325,8 @@
     const result = selectNextWord(state.filteredWords, state.roundWordIds);
     state.currentWord = result.word;
     state.roundWordIds = result.usedIds;
+    state.currentWordRevealed = false;
+    state.currentExampleRevealed = false;
     elements.answerInput.value = "";
     renderPractice(elements);
     if (state.currentWord) {
@@ -324,6 +340,8 @@
     state.correct = 0;
     state.wrong = 0;
     state.totalAnswered = 0;
+    state.currentWordRevealed = false;
+    state.currentExampleRevealed = false;
     state.roundWordIds = [];
     state.filteredWords = sourceWords || filterWords(state.words, currentFilters(elements));
     chooseNextPracticeWord(elements);
@@ -400,7 +418,7 @@
     elements.competitionWord.textContent = formatCompetitionWord(state.competitionWord, state.competitionWordRevealed);
     elements.competitionWordLabel.textContent = state.competitionWordRevealed ? "Answer revealed" : "Word is hidden";
     elements.competitionMeaning.textContent = state.competitionWord ? state.competitionWord.meaning : "Start a round to show the clue.";
-    elements.competitionExample.textContent = state.competitionWord ? state.competitionWord.example : "The example appears here.";
+    elements.competitionExample.textContent = formatHiddenValue(state.competitionWord?.example, state.competitionExampleRevealed, "Hidden phrase");
     elements.competitionLevel.textContent = state.competitionWord ? `${state.competitionWord.category} | ${state.competitionWord.unit} | ${state.competitionWord.level}` : "-";
     elements.timerValue.textContent = state.secondsLeft;
     elements.scoreboard.innerHTML = "";
@@ -420,6 +438,7 @@
     clearInterval(state.timerId);
     state.secondsLeft = 60;
     state.competitionWordRevealed = false;
+    state.competitionExampleRevealed = false;
     renderCompetition(elements);
     state.timerId = setInterval(() => {
       state.secondsLeft -= 1;
@@ -436,6 +455,7 @@
     const result = selectNextWord(state.words, state.roundWordIds);
     state.competitionWord = result.word;
     state.competitionWordRevealed = false;
+    state.competitionExampleRevealed = false;
     state.roundWordIds = result.usedIds;
     startTimer(elements);
     if (state.competitionWord) {
@@ -458,6 +478,7 @@
     state.currentTeamIndex = 0;
     state.competitionWord = null;
     state.competitionWordRevealed = false;
+    state.competitionExampleRevealed = false;
     state.secondsLeft = 60;
     renderCompetition(elements);
   }
@@ -518,6 +539,19 @@
     elements.newRoundBtn.addEventListener("click", () => startNewRound(elements));
     elements.listenBtn.addEventListener("click", () => speakWord(state.currentWord));
     elements.listenContextBtn.addEventListener("click", () => speakWord(state.currentWord, true));
+    elements.revealPracticeWordBtn.addEventListener("click", () => {
+      state.currentWordRevealed = true;
+      renderPractice(elements);
+    });
+    elements.revealPracticeExampleBtn.addEventListener("click", () => {
+      state.currentExampleRevealed = true;
+      renderPractice(elements);
+    });
+    elements.hidePracticeCluesBtn.addEventListener("click", () => {
+      state.currentWordRevealed = false;
+      state.currentExampleRevealed = false;
+      renderPractice(elements);
+    });
     elements.voiceSelect.addEventListener("change", () => {
       state.selectedVoiceName = elements.voiceSelect.value;
       writeVoiceSettings(window.localStorage, { selectedVoiceName: state.selectedVoiceName, voiceRate: state.voiceRate });
@@ -554,8 +588,13 @@
       state.competitionWordRevealed = true;
       renderCompetition(elements);
     });
+    elements.revealExampleBtn.addEventListener("click", () => {
+      state.competitionExampleRevealed = true;
+      renderCompetition(elements);
+    });
     elements.hideWordBtn.addEventListener("click", () => {
       state.competitionWordRevealed = false;
+      state.competitionExampleRevealed = false;
       renderCompetition(elements);
     });
     elements.pointsButtons.forEach((button) => {
@@ -606,6 +645,7 @@
       buildSpeechText,
       buildCompetitionPrompt,
       formatCompetitionWord,
+      formatHiddenValue,
       findBestVoice,
       filterWords,
       getUniqueValues,

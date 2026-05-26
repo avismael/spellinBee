@@ -6,6 +6,7 @@ const {
   buildCompetitionPrompt,
   buildSpeechText,
   formatCompetitionWord,
+  formatHiddenValue,
   findBestVoice,
   filterWords,
   getWinner,
@@ -71,6 +72,12 @@ test("hides competition word until revealed", () => {
 test("builds competition prompt for the current word", () => {
   assert.equal(buildCompetitionPrompt(null), "Choose a word first.");
   assert.equal(buildCompetitionPrompt({ word: "teacher" }), "Your word is teacher.");
+});
+
+test("formats hidden values until revealed", () => {
+  assert.equal(formatHiddenValue("My teacher is kind.", false, "Hidden phrase"), "Hidden phrase");
+  assert.equal(formatHiddenValue("My teacher is kind.", true, "Hidden phrase"), "My teacher is kind.");
+  assert.equal(formatHiddenValue("", true, "Hidden phrase"), "Hidden phrase");
 });
 
 test("detects a unique competition winner", () => {
