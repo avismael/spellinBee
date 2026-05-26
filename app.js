@@ -561,7 +561,10 @@
       writeVoiceSettings(window.localStorage, { selectedVoiceName: state.selectedVoiceName, voiceRate: state.voiceRate });
     });
     elements.testVoiceBtn.addEventListener("click", () => speak("Beautiful. My teacher is kind."));
-    elements.nextWordBtn.addEventListener("click", () => chooseNextPracticeWord(elements));
+    elements.nextWordBtn.addEventListener("click", () => {
+      chooseNextPracticeWord(elements);
+      speakWord(state.currentWord);
+    });
     elements.answerForm.addEventListener("submit", (event) => {
       event.preventDefault();
       handleAnswer(elements);
