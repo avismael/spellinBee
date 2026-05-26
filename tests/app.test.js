@@ -5,7 +5,9 @@ const {
   addMistake,
   buildCelebrationMessage,
   buildCompetitionPrompt,
+  buildSpellingProgress,
   buildSpeechText,
+  extractSpokenLetters,
   formatCompetitionWord,
   formatHiddenValue,
   findBestVoice,
@@ -117,6 +119,19 @@ test("builds speech text with optional example context", () => {
   const word = { word: "teacher", example: "My teacher is kind." };
   assert.equal(buildSpeechText(word, false), "teacher");
   assert.equal(buildSpeechText(word, true), "teacher. My teacher is kind.");
+});
+
+test("extracts spoken spelling letters", () => {
+  assert.equal(extractSpokenLetters("t e a c h e r"), "teacher");
+  assert.equal(extractSpokenLetters("tee ee ay sea aitch ee are"), "teacher");
+});
+
+test("builds spelling progress slots", () => {
+  assert.deepEqual(buildSpellingProgress("cat", "see ay"), [
+    { letter: "c", value: "c", correct: true, filled: true },
+    { letter: "a", value: "a", correct: true, filled: true },
+    { letter: "t", value: "", correct: false, filled: false }
+  ]);
 });
 
 test("persists voice settings", () => {

@@ -387,6 +387,35 @@ button {
   gap: 0.75rem;
 }
 
+.spelling-slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0.85rem 0;
+}
+
+.spelling-slot {
+  display: grid;
+  place-items: center;
+  min-width: 2.15rem;
+  height: 2.45rem;
+  border-radius: 0.75rem;
+  background: var(--cream);
+  color: var(--muted);
+  font-weight: 900;
+  font-size: 1.15rem;
+}
+
+.spelling-slot.filled {
+  background: #ddf9ec;
+  color: var(--green);
+}
+
+.spelling-slot.wrong {
+  background: #ffe5e1;
+  color: var(--red);
+}
+
 .feedback {
   margin-top: 0.85rem;
   border-radius: 0.85rem;

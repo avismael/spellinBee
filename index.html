@@ -137,9 +137,19 @@
           <p>Try automatic speech recognition or let the teacher validate manually.</p>
         </div>
         <div class="speaking-card">
-          <p>Current word: <strong id="speaking-word">No word selected</strong></p>
-          <button class="primary" type="button" id="speak-btn">Speak</button>
+          <p>Current challenge: <strong id="speaking-word">No word selected</strong></p>
+          <div class="spelling-slots" id="spelling-slots" aria-label="Spelling progress"></div>
+          <div class="manual-actions">
+            <button class="primary" type="button" id="new-speaking-word-btn">Random Word</button>
+            <button type="button" id="listen-speaking-word-btn">Listen</button>
+            <button type="button" id="speak-btn">Start Spelling</button>
+            <button type="button" id="clear-speaking-btn">Clear</button>
+          </div>
           <p id="speech-result">Speech recognition result will appear here.</p>
+          <label>
+            Manual spelling fallback
+            <input id="manual-spelling-input" autocomplete="off" placeholder="Type letters if speech recognition fails">
+          </label>
           <div class="manual-actions">
             <button type="button" id="manual-speaking-correct">Correct Speaking</button>
             <button type="button" id="manual-speaking-wrong">Incorrect Speaking</button>

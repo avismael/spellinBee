@@ -19,6 +19,8 @@
     totalAnswered: 0,
     currentWordRevealed: false,
     currentExampleRevealed: false,
+    speakingPracticeWord: null,
+    spokenLetters: "",
     mistakes: [],
     teams: [
       { id: 1, name: "Team A", score: 0 },
@@ -91,6 +93,36 @@
 
   function buildCelebrationMessage(word) {
     return word ? `Congratulations! ${word.word} is correct.` : "Congratulations! Correct answer.";
+  }
+
+  function extractSpokenLetters(transcript) {
+    const letterWords = {
+      a: "a", ay: "a", b: "b", be: "b", bee: "b", c: "c", see: "c", sea: "c", d: "d", dee: "d",
+      e: "e", ee: "e", f: "f", ef: "f", g: "g", gee: "g", h: "h", aitch: "h", i: "i", eye: "i",
+      j: "j", jay: "j", k: "k", kay: "k", l: "l", el: "l", m: "m", em: "m", n: "n", en: "n",
+      o: "o", oh: "o", p: "p", pee: "p", q: "q", cue: "q", queue: "q", r: "r", are: "r",
+      s: "s", ess: "s", t: "t", tea: "t", tee: "t", u: "u", you: "u", v: "v", vee: "v",
+      w: "w", doubleyou: "w", x: "x", ex: "x", y: "y", why: "y", z: "z", zee: "z", zed: "z"
+    };
+    return String(transcript || "")
+      .toLowerCase()
+      .replace(/double\s+you/g, "doubleyou")
+      .split(/[^a-z]+/)
+      .filter(Boolean)
+      .map((token) => letterWords[token] || (token.length === 1 ? token : token.replace(/[^a-z]/g, "")))
+      .join("")
+      .replace(/[^a-z]/g, "");
+  }
+
+  function buildSpellingProgress(word, spokenLetters) {
+    const target = normalizeAnswer(word).replace(/[^a-z]/g, "");
+    const spoken = extractSpokenLetters(spokenLetters).slice(0, target.length);
+    return target.split("").map((letter, index) => ({
+      letter,
+      value: spoken[index] || "",
+      correct: spoken[index] === letter,
+      filled: Boolean(spoken[index])
+    }));
   }
 
   function getWinner(teams) {
@@ -193,6 +225,11 @@
       wrongValue: document.getElementById("wrong-value"),
       progressValue: document.getElementById("progress-value"),
       speakingWord: document.getElementById("speaking-word"),
+      spellingSlots: document.getElementById("spelling-slots"),
+      newSpeakingWordBtn: document.getElementById("new-speaking-word-btn"),
+      listenSpeakingWordBtn: document.getElementById("listen-speaking-word-btn"),
+      clearSpeakingBtn: document.getElementById("clear-speaking-btn"),
+      manualSpellingInput: document.getElementById("manual-spelling-input"),
       speakBtn: document.getElementById("speak-btn"),
       speechResult: document.getElementById("speech-result"),
       manualSpeakingCorrect: document.getElementById("manual-speaking-correct"),
@@ -339,14 +376,41 @@
       elements.meaningDisplay.textContent = "No words available";
       elements.practiceWordDisplay.textContent = "Hidden word";
       elements.exampleDisplay.textContent = "Change the filters or add more words to data/words.json.";
-      elements.speakingWord.textContent = "No word selected";
       return;
     }
 
     elements.meaningDisplay.textContent = state.currentWord.meaning;
     elements.practiceWordDisplay.textContent = formatHiddenValue(state.currentWord.word, state.currentWordRevealed, "Hidden word");
     elements.exampleDisplay.textContent = formatHiddenValue(state.currentWord.example, state.currentExampleRevealed, "Hidden phrase");
-    elements.speakingWord.textContent = state.currentWord.word;
+  }
+
+  function renderSpeaking(elements) {
+    const word = state.speakingPracticeWord;
+    elements.speakingWord.textContent = word ? `${word.meaning} (${word.level})` : "No word selected";
+    elements.spellingSlots.innerHTML = "";
+
+    if (!word) {
+      elements.spellingSlots.innerHTML = "<span>Choose a random word to start.</span>";
+      return;
+    }
+
+    buildSpellingProgress(word.word, state.spokenLetters).forEach((slot) => {
+      const cell = document.createElement("span");
+      cell.className = ["spelling-slot", slot.filled ? "filled" : "", slot.filled && !slot.correct ? "wrong" : ""].filter(Boolean).join(" ");
+      cell.textContent = slot.filled ? slot.value.toUpperCase() : "_";
+      elements.spellingSlots.appendChild(cell);
+    });
+  }
+
+  function chooseSpeakingWord(elements) {
+    const pool = state.filteredWords.length ? state.filteredWords : state.words;
+    const result = selectNextWord(pool, []);
+    state.speakingPracticeWord = result.word;
+    state.spokenLetters = "";
+    elements.manualSpellingInput.value = "";
+    elements.speechResult.textContent = "Listen to the word, then press Start Spelling.";
+    renderSpeaking(elements);
+    speakWord(state.speakingPracticeWord);
   }
 
   function chooseNextPracticeWord(elements) {
@@ -513,8 +577,8 @@
   }
 
   function recognizeSpeech(elements) {
-    if (!state.currentWord) {
-      elements.speechResult.textContent = "Choose a practice word first.";
+    if (!state.speakingPracticeWord) {
+      elements.speechResult.textContent = "Choose a random word first.";
       return;
     }
 
@@ -526,16 +590,18 @@
 
     const recognition = new Recognition();
     recognition.lang = "en-US";
-    recognition.interimResults = false;
+    recognition.interimResults = true;
     recognition.maxAlternatives = 1;
     elements.speechResult.textContent = "Listening... spell the word now.";
     recognition.onresult = (event) => {
-      const transcript = event.results[0][0].transcript.replace(/\s+/g, "");
-      const expected = state.currentWord.word.replace(/\s+/g, "");
-      const correct = isCorrectAnswer(transcript, expected);
+      const transcript = Array.from(event.results).map((result) => result[0].transcript).join(" ");
+      state.spokenLetters = extractSpokenLetters(transcript);
+      renderSpeaking(elements);
+      const expected = state.speakingPracticeWord.word.replace(/\s+/g, "");
+      const correct = isCorrectAnswer(state.spokenLetters, expected);
       elements.speechResult.textContent = correct
-        ? `Automatic result: correct (${event.results[0][0].transcript})`
-        : `Automatic result: try again (${event.results[0][0].transcript})`;
+        ? `Automatic result: correct (${transcript})`
+        : `Recognized: ${transcript}`;
     };
     recognition.onerror = () => {
       elements.speechResult.textContent = "Recognition failed. Use manual validation.";
@@ -599,6 +665,18 @@
       handleAnswer(elements);
     });
     elements.speakBtn.addEventListener("click", () => recognizeSpeech(elements));
+    elements.newSpeakingWordBtn.addEventListener("click", () => chooseSpeakingWord(elements));
+    elements.listenSpeakingWordBtn.addEventListener("click", () => speakWord(state.speakingPracticeWord));
+    elements.clearSpeakingBtn.addEventListener("click", () => {
+      state.spokenLetters = "";
+      elements.manualSpellingInput.value = "";
+      elements.speechResult.textContent = "Cleared. Try spelling again.";
+      renderSpeaking(elements);
+    });
+    elements.manualSpellingInput.addEventListener("input", () => {
+      state.spokenLetters = extractSpokenLetters(elements.manualSpellingInput.value);
+      renderSpeaking(elements);
+    });
     elements.manualSpeakingCorrect.addEventListener("click", () => {
       elements.speechResult.textContent = "Teacher marked the speaking attempt as correct.";
     });
@@ -661,6 +739,7 @@
     bindEvents(elements);
     renderWordBank(elements);
     renderMistakes(elements);
+    renderSpeaking(elements);
     renderCompetition(elements);
     elements.copyrightYear.textContent = new Date().getFullYear();
     loadBrowserVoices(elements);
@@ -678,8 +757,10 @@
       buildCelebrationMessage,
       buildSpeechText,
       buildCompetitionPrompt,
+      buildSpellingProgress,
       formatCompetitionWord,
       formatHiddenValue,
+      extractSpokenLetters,
       findBestVoice,
       filterWords,
       getUniqueValues,
