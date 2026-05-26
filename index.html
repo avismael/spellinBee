@@ -56,21 +56,24 @@
           <p>Select a category, unit and level. The app will avoid repeating words in the same round.</p>
         </div>
 
-        <div class="controls-grid" aria-label="Practice filters">
-          <label>
-            Category
-            <select id="category-select"></select>
-          </label>
-          <label>
-            Unit
-            <select id="unit-select"></select>
-          </label>
-          <label>
-            Level
-            <select id="level-select"></select>
-          </label>
-          <button class="secondary" type="button" id="new-round-btn">New Round</button>
-        </div>
+        <details class="practice-settings">
+          <summary>Practice filters</summary>
+          <div class="controls-grid" aria-label="Practice filters">
+            <label>
+              Category
+              <select id="category-select"></select>
+            </label>
+            <label>
+              Unit
+              <select id="unit-select"></select>
+            </label>
+            <label>
+              Level
+              <select id="level-select"></select>
+            </label>
+            <button class="secondary" type="button" id="new-round-btn">New Round</button>
+          </div>
+        </details>
 
         <article class="practice-card">
           <div class="score-strip">

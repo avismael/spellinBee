@@ -184,11 +184,13 @@ footer {
   min-height: calc(100vh - 92px);
 }
 
-.voice-settings {
+.voice-settings,
+.practice-settings {
   margin: 0.85rem 0;
 }
 
-.voice-settings summary {
+.voice-settings summary,
+.practice-settings summary {
   width: fit-content;
   border-radius: 999px;
   padding: 0.62rem 0.9rem;
@@ -305,7 +307,10 @@ main {
 
 .controls-grid {
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  margin: 1rem 0;
+  margin-top: 0.75rem;
+  padding: 0.8rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.72);
 }
 
 label {
