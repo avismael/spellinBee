@@ -1,8 +1,8 @@
-# ASPECT / SPEC — App Spelling Bee INSE
+# ASPECT / SPEC — App Spelling Bee
 
 ## 1. Nombre del proyecto
 
-**Spelling Bee INSE**
+**Spelling Bee**
 
 Aplicación web educativa para que estudiantes practiquen vocabulario en inglés mediante actividades de listening, writing, speaking, spelling y competencia por equipos.
 
@@ -10,7 +10,7 @@ Aplicación web educativa para que estudiantes practiquen vocabulario en inglés
 
 ## 2. Descripción general
 
-**Spelling Bee INSE** será una aplicación web interactiva orientada a estudiantes de bachillerato. Permitirá practicar vocabulario en inglés a partir de un banco de palabras cargado por el docente.
+**Spelling Bee** será una aplicación web interactiva orientada a estudiantes de bachillerato. Permitirá practicar vocabulario en inglés a partir de un banco de palabras cargado por el docente.
 
 La app permitirá que el estudiante:
 
@@ -347,7 +347,7 @@ En una versión posterior se podrá editar desde la interfaz.
 ## 10. Estructura técnica sugerida
 
 ```text
-spelling-bee-inse/
+spelling-bee/
 │
 ├── index.html
 ├── styles.css
@@ -707,9 +707,8 @@ Ese será el primer objetivo realista antes de agregar login, reportes y panel d
 
 ## 20. Nombre final sugerido
 
-**Spelling Bee INSE**
+**Spelling Bee**
 
 Subtítulo sugerido:
 
 **Listen, Spell and Speak**
-

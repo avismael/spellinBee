@@ -34,5 +34,5 @@ const server = http.createServer((request, response) => {
 });
 
 server.listen(port, () => {
-  console.log(`Spelling Bee INSE running at http://localhost:${port}`);
+  console.log(`Spelling Bee running at http://localhost:${port}`);
 });

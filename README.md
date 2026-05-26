@@ -1,4 +1,4 @@
-# Spelling Bee INSE
+# Spelling Bee
 
 Aplicacion web educativa para practicar vocabulario en ingles mediante actividades de listening, writing, speaking y competencia por equipos.
 
