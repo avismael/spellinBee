@@ -13,6 +13,8 @@ const {
   formatHiddenValue,
   findBestVoice,
   filterWords,
+  getWordsForCategory,
+  groupWordsByCategory,
   getWinner,
   isCorrectAnswer,
   isSpellingComplete,
@@ -43,6 +45,18 @@ test("normalizes written answers", () => {
 test("filters words by category, unit and level", () => {
   const filtered = filterWords(words, { category: "school", unit: "Unit 1", level: "easy" });
   assert.deepEqual(filtered.map((word) => word.id), [1, 3]);
+});
+
+test("groups word bank entries by category", () => {
+  assert.deepEqual(groupWordsByCategory(words), [
+    { category: "adjectives", words: [words[1]] },
+    { category: "school", words: [words[0], words[2]] }
+  ]);
+});
+
+test("gets the words for one word bank category", () => {
+  assert.deepEqual(getWordsForCategory(words, "school"), [words[0], words[2]]);
+  assert.deepEqual(getWordsForCategory(words, "adjectives"), [words[1]]);
 });
 
 test("selects words without repeating until pool is exhausted", () => {

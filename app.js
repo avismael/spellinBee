@@ -38,6 +38,7 @@
     competitionExampleRevealed: false,
     timerId: null,
     secondsLeft: 60,
+    selectedWordBankCategory: "",
     voices: [],
     selectedVoiceName: "",
     voiceRate: 0.78,
@@ -66,6 +67,25 @@
       const levelMatch = !filters.level || filters.level === "all" || word.level === filters.level;
       return categoryMatch && unitMatch && levelMatch;
     });
+  }
+
+  function groupWordsByCategory(words) {
+    const groups = words.reduce((map, word) => {
+      const key = word.category || "uncategorized";
+      if (!map[key]) {
+        map[key] = [];
+      }
+      map[key].push(word);
+      return map;
+    }, {});
+
+    return Object.keys(groups)
+      .sort()
+      .map((category) => ({ category, words: groups[category] }));
+  }
+
+  function getWordsForCategory(words, category) {
+    return words.filter((word) => (word.category || "uncategorized") === category);
   }
 
   function selectNextWord(words, usedIds, random = Math.random) {
@@ -571,7 +591,76 @@
   }
 
   function renderWordBank(elements) {
-    renderWordCards(elements.wordBankList, state.words, "No words loaded.");
+    elements.wordBankList.innerHTML = "";
+    if (!state.words.length) {
+      elements.wordBankList.innerHTML = `<article><h3>No words loaded.</h3></article>`;
+      return;
+    }
+
+    if (state.selectedWordBankCategory) {
+      const detail = document.createElement("section");
+      detail.className = "word-bank-detail";
+
+      const header = document.createElement("div");
+      header.className = "word-bank-detail-header";
+
+      const backButton = document.createElement("button");
+      backButton.type = "button";
+      backButton.className = "word-bank-back-button";
+      backButton.textContent = "Back to categories";
+      backButton.addEventListener("click", () => {
+        state.selectedWordBankCategory = "";
+        renderWordBank(elements);
+      });
+
+      const detailWords = getWordsForCategory(state.words, state.selectedWordBankCategory);
+      const title = document.createElement("div");
+      title.innerHTML = `
+        <h3>${state.selectedWordBankCategory}</h3>
+        <p>${detailWords.length} words in this category</p>
+      `;
+
+      header.appendChild(backButton);
+      header.appendChild(title);
+      detail.appendChild(header);
+
+      const grid = document.createElement("div");
+      grid.className = "word-list word-bank-category-grid";
+      renderWordCards(grid, detailWords, "No words in this category.");
+      detail.appendChild(grid);
+      elements.wordBankList.appendChild(detail);
+      return;
+    }
+
+    groupWordsByCategory(state.words).forEach((group) => {
+      const section = document.createElement("button");
+      section.type = "button";
+      section.className = "word-bank-category";
+      section.addEventListener("click", () => {
+        state.selectedWordBankCategory = group.category;
+        renderWordBank(elements);
+      });
+
+      const heading = document.createElement("div");
+      heading.className = "word-bank-category-header";
+      heading.innerHTML = `
+        <h3>${group.category}</h3>
+        <p>${group.words.length} words</p>
+      `;
+
+      const preview = document.createElement("p");
+      preview.className = "word-bank-category-preview";
+      preview.textContent = group.words.slice(0, 3).map((word) => word.word).join(", ");
+
+      const hint = document.createElement("span");
+      hint.className = "word-bank-category-hint";
+      hint.textContent = "Click to review words";
+
+      section.appendChild(heading);
+      section.appendChild(preview);
+      section.appendChild(hint);
+      elements.wordBankList.appendChild(section);
+    });
   }
 
   function showView(elements, viewId) {
@@ -860,6 +949,8 @@
       extractSpokenLetters,
       findBestVoice,
       filterWords,
+      getWordsForCategory,
+      groupWordsByCategory,
       getUniqueValues,
       getWinner,
       isSpellingComplete,

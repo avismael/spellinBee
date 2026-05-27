@@ -660,6 +660,71 @@ button {
   margin-top: 0.85rem;
 }
 
+.word-bank-category {
+  display: block;
+  width: 100%;
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 1.2rem;
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(27, 27, 41, 0.08);
+  text-align: left;
+}
+
+.word-bank-detail {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 1.2rem;
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(27, 27, 41, 0.08);
+}
+
+.word-bank-category:first-child,
+.word-bank-detail:first-child {
+  margin-top: 0.85rem;
+}
+
+.word-bank-category-header,
+.word-bank-detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.word-bank-category-header h3,
+.word-bank-category-header p,
+.word-bank-detail-header h3,
+.word-bank-detail-header p {
+  margin: 0;
+}
+
+.word-bank-category-header p,
+.word-bank-detail-header p {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.word-bank-category-preview {
+  margin: 0.75rem 0 0;
+  color: var(--muted);
+}
+
+.word-bank-category-hint {
+  display: inline-block;
+  margin-top: 0.75rem;
+  color: var(--blue);
+  font-weight: 900;
+}
+
+.word-bank-back-button {
+  flex-shrink: 0;
+}
+
+.word-bank-category-grid {
+  margin-top: 0.85rem;
+}
+
 .word-list article {
   border-radius: 1rem;
   padding: 0.82rem;

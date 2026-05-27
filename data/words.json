@@ -541,137 +541,677 @@
   },
   {
     "id": 61,
-    "word": "write",
-    "meaning": "escribir",
-    "category": "verbs",
+    "word": "writes",
+    "meaning": "escribe",
+    "category": "present verbs",
     "unit": "Unit 5",
     "level": "easy",
-    "example": "Please write your name."
+    "example": "She writes her name on the paper."
   },
   {
     "id": 62,
-    "word": "listen",
-    "meaning": "escuchar",
-    "category": "verbs",
+    "word": "listens",
+    "meaning": "escucha",
+    "category": "present verbs",
     "unit": "Unit 5",
     "level": "easy",
-    "example": "Listen to the question."
+    "example": "He listens to the teacher carefully."
   },
   {
     "id": 63,
-    "word": "speak",
-    "meaning": "hablar",
-    "category": "verbs",
+    "word": "speaks",
+    "meaning": "habla",
+    "category": "present verbs",
     "unit": "Unit 5",
     "level": "easy",
-    "example": "Speak clearly during the contest."
+    "example": "She speaks clearly during the contest."
   },
   {
     "id": 64,
-    "word": "read",
-    "meaning": "leer",
-    "category": "verbs",
+    "word": "reads",
+    "meaning": "lee",
+    "category": "present verbs",
     "unit": "Unit 5",
     "level": "easy",
-    "example": "Read the instructions first."
+    "example": "He reads the instructions first."
   },
   {
     "id": 65,
-    "word": "learn",
-    "meaning": "aprender",
-    "category": "verbs",
+    "word": "learns",
+    "meaning": "aprende",
+    "category": "present verbs",
     "unit": "Unit 5",
     "level": "easy",
-    "example": "We learn new words every week."
+    "example": "She learns new words every week."
   },
   {
     "id": 66,
-    "word": "travel",
-    "meaning": "viajar",
-    "category": "verbs",
+    "word": "travels",
+    "meaning": "viaja",
+    "category": "present verbs",
     "unit": "Unit 5",
     "level": "medium",
-    "example": "They travel by bus."
+    "example": "My uncle travels by bus every day."
   },
   {
     "id": 67,
-    "word": "prepare",
-    "meaning": "preparar",
-    "category": "verbs",
+    "word": "prepares",
+    "meaning": "prepara",
+    "category": "present verbs",
     "unit": "Unit 5",
     "level": "medium",
-    "example": "Students prepare for the spelling bee."
+    "example": "The team prepares for the spelling bee."
   },
   {
     "id": 68,
-    "word": "practice",
-    "meaning": "practicar",
-    "category": "verbs",
+    "word": "practices",
+    "meaning": "practica",
+    "category": "present verbs",
     "unit": "Unit 5",
     "level": "medium",
-    "example": "Practice improves your pronunciation."
+    "example": "She practices pronunciation after class."
   },
   {
     "id": 69,
-    "word": "answer",
-    "meaning": "responder",
-    "category": "verbs",
+    "word": "answers",
+    "meaning": "responde",
+    "category": "present verbs",
     "unit": "Unit 5",
     "level": "medium",
-    "example": "Raise your hand to answer."
+    "example": "He answers the question quickly."
   },
   {
     "id": 70,
-    "word": "explain",
-    "meaning": "explicar",
-    "category": "verbs",
+    "word": "explains",
+    "meaning": "explica",
+    "category": "present verbs",
     "unit": "Unit 5",
     "level": "medium",
-    "example": "Can you explain the rule?"
+    "example": "The teacher explains the rule well."
   },
   {
     "id": 71,
-    "word": "discover",
-    "meaning": "descubrir",
-    "category": "verbs",
+    "word": "discovers",
+    "meaning": "descubre",
+    "category": "present verbs",
     "unit": "Unit 5",
     "level": "hard",
-    "example": "Scientists discover new ideas."
+    "example": "The scientist discovers a new method."
   },
   {
     "id": 72,
-    "word": "improve",
-    "meaning": "mejorar",
-    "category": "verbs",
+    "word": "improves",
+    "meaning": "mejora",
+    "category": "present verbs",
     "unit": "Unit 5",
     "level": "hard",
-    "example": "Daily reading can improve your vocabulary."
+    "example": "Daily reading improves her vocabulary."
   },
   {
     "id": 73,
-    "word": "communicate",
-    "meaning": "comunicar",
-    "category": "verbs",
+    "word": "communicates",
+    "meaning": "comunica",
+    "category": "present verbs",
     "unit": "Unit 5",
     "level": "hard",
-    "example": "People communicate in many languages."
+    "example": "The app communicates the result clearly."
   },
   {
     "id": 74,
-    "word": "participate",
-    "meaning": "participar",
-    "category": "verbs",
+    "word": "participates",
+    "meaning": "participa",
+    "category": "present verbs",
     "unit": "Unit 5",
     "level": "hard",
-    "example": "All teams participate in the final round."
+    "example": "Each team participates in the final round."
   },
   {
     "id": 75,
-    "word": "concentrate",
-    "meaning": "concentrarse",
-    "category": "verbs",
+    "word": "concentrates",
+    "meaning": "se concentra",
+    "category": "present verbs",
     "unit": "Unit 5",
     "level": "hard",
-    "example": "Concentrate before you spell the word."
+    "example": "She concentrates before spelling the word."
+  },
+  {
+    "id": 76,
+    "word": "dog",
+    "meaning": "perro",
+    "category": "animals",
+    "unit": "Unit 6",
+    "level": "easy",
+    "example": "The dog runs in the yard."
+  },
+  {
+    "id": 77,
+    "word": "cat",
+    "meaning": "gato",
+    "category": "animals",
+    "unit": "Unit 6",
+    "level": "easy",
+    "example": "The cat sleeps on the sofa."
+  },
+  {
+    "id": 78,
+    "word": "bird",
+    "meaning": "pajaro",
+    "category": "animals",
+    "unit": "Unit 6",
+    "level": "easy",
+    "example": "A bird sings in the tree."
+  },
+  {
+    "id": 79,
+    "word": "fish",
+    "meaning": "pez",
+    "category": "animals",
+    "unit": "Unit 6",
+    "level": "easy",
+    "example": "The fish swims in clear water."
+  },
+  {
+    "id": 80,
+    "word": "horse",
+    "meaning": "caballo",
+    "category": "animals",
+    "unit": "Unit 6",
+    "level": "easy",
+    "example": "The horse is very strong."
+  },
+  {
+    "id": 81,
+    "word": "rabbit",
+    "meaning": "conejo",
+    "category": "animals",
+    "unit": "Unit 6",
+    "level": "medium",
+    "example": "The rabbit eats a carrot."
+  },
+  {
+    "id": 82,
+    "word": "turtle",
+    "meaning": "tortuga",
+    "category": "animals",
+    "unit": "Unit 6",
+    "level": "medium",
+    "example": "The turtle moves slowly."
+  },
+  {
+    "id": 83,
+    "word": "monkey",
+    "meaning": "mono",
+    "category": "animals",
+    "unit": "Unit 6",
+    "level": "medium",
+    "example": "The monkey climbed the branch."
+  },
+  {
+    "id": 84,
+    "word": "parrot",
+    "meaning": "loro",
+    "category": "animals",
+    "unit": "Unit 6",
+    "level": "medium",
+    "example": "The parrot can repeat words."
+  },
+  {
+    "id": 85,
+    "word": "insect",
+    "meaning": "insecto",
+    "category": "animals",
+    "unit": "Unit 6",
+    "level": "medium",
+    "example": "An insect landed on the leaf."
+  },
+  {
+    "id": 86,
+    "word": "elephant",
+    "meaning": "elefante",
+    "category": "animals",
+    "unit": "Unit 6",
+    "level": "hard",
+    "example": "The elephant walked across the field."
+  },
+  {
+    "id": 87,
+    "word": "dolphin",
+    "meaning": "delfin",
+    "category": "animals",
+    "unit": "Unit 6",
+    "level": "hard",
+    "example": "The dolphin jumped above the waves."
+  },
+  {
+    "id": 88,
+    "word": "crocodile",
+    "meaning": "cocodrilo",
+    "category": "animals",
+    "unit": "Unit 6",
+    "level": "hard",
+    "example": "The crocodile rested near the river."
+  },
+  {
+    "id": 89,
+    "word": "butterfly",
+    "meaning": "mariposa",
+    "category": "animals",
+    "unit": "Unit 6",
+    "level": "hard",
+    "example": "A butterfly landed on the flower."
+  },
+  {
+    "id": 90,
+    "word": "kangaroo",
+    "meaning": "canguro",
+    "category": "animals",
+    "unit": "Unit 6",
+    "level": "hard",
+    "example": "The kangaroo jumped very far."
+  },
+  {
+    "id": 91,
+    "word": "house",
+    "meaning": "casa",
+    "category": "places",
+    "unit": "Unit 7",
+    "level": "easy",
+    "example": "My house has a blue door."
+  },
+  {
+    "id": 92,
+    "word": "park",
+    "meaning": "parque",
+    "category": "places",
+    "unit": "Unit 7",
+    "level": "easy",
+    "example": "Children play in the park."
+  },
+  {
+    "id": 93,
+    "word": "store",
+    "meaning": "tienda",
+    "category": "places",
+    "unit": "Unit 7",
+    "level": "easy",
+    "example": "We bought snacks at the store."
+  },
+  {
+    "id": 94,
+    "word": "street",
+    "meaning": "calle",
+    "category": "places",
+    "unit": "Unit 7",
+    "level": "easy",
+    "example": "The street is busy today."
+  },
+  {
+    "id": 95,
+    "word": "beach",
+    "meaning": "playa",
+    "category": "places",
+    "unit": "Unit 7",
+    "level": "easy",
+    "example": "The beach is beautiful at sunset."
+  },
+  {
+    "id": 96,
+    "word": "museum",
+    "meaning": "museo",
+    "category": "places",
+    "unit": "Unit 7",
+    "level": "medium",
+    "example": "The museum shows ancient art."
+  },
+  {
+    "id": 97,
+    "word": "bridge",
+    "meaning": "puente",
+    "category": "places",
+    "unit": "Unit 7",
+    "level": "medium",
+    "example": "Cars cross the bridge every day."
+  },
+  {
+    "id": 98,
+    "word": "market",
+    "meaning": "mercado",
+    "category": "places",
+    "unit": "Unit 7",
+    "level": "medium",
+    "example": "My grandmother sells fruit at the market."
+  },
+  {
+    "id": 99,
+    "word": "station",
+    "meaning": "estacion",
+    "category": "places",
+    "unit": "Unit 7",
+    "level": "medium",
+    "example": "The bus station opens early."
+  },
+  {
+    "id": 100,
+    "word": "village",
+    "meaning": "pueblo",
+    "category": "places",
+    "unit": "Unit 7",
+    "level": "medium",
+    "example": "Her grandparents live in a small village."
+  },
+  {
+    "id": 101,
+    "word": "neighborhood",
+    "meaning": "vecindario",
+    "category": "places",
+    "unit": "Unit 7",
+    "level": "hard",
+    "example": "Our neighborhood is quiet at night."
+  },
+  {
+    "id": 102,
+    "word": "mountain",
+    "meaning": "montana",
+    "category": "places",
+    "unit": "Unit 7",
+    "level": "hard",
+    "example": "Snow covered the mountain peak."
+  },
+  {
+    "id": 103,
+    "word": "airport",
+    "meaning": "aeropuerto",
+    "category": "places",
+    "unit": "Unit 7",
+    "level": "hard",
+    "example": "We arrived at the airport on time."
+  },
+  {
+    "id": 104,
+    "word": "library hall",
+    "meaning": "sala de biblioteca",
+    "category": "places",
+    "unit": "Unit 7",
+    "level": "hard",
+    "example": "Students waited inside the library hall."
+  },
+  {
+    "id": 105,
+    "word": "playground",
+    "meaning": "patio de juegos",
+    "category": "places",
+    "unit": "Unit 7",
+    "level": "hard",
+    "example": "The playground is full after class."
+  },
+  {
+    "id": 106,
+    "word": "phone",
+    "meaning": "telefono",
+    "category": "technology",
+    "unit": "Unit 8",
+    "level": "easy",
+    "example": "My phone is on the desk."
+  },
+  {
+    "id": 107,
+    "word": "screen",
+    "meaning": "pantalla",
+    "category": "technology",
+    "unit": "Unit 8",
+    "level": "easy",
+    "example": "The screen is very bright."
+  },
+  {
+    "id": 108,
+    "word": "mouse",
+    "meaning": "raton",
+    "category": "technology",
+    "unit": "Unit 8",
+    "level": "easy",
+    "example": "Click the icon with the mouse."
+  },
+  {
+    "id": 109,
+    "word": "keyboard",
+    "meaning": "teclado",
+    "category": "technology",
+    "unit": "Unit 8",
+    "level": "easy",
+    "example": "The keyboard has black keys."
+  },
+  {
+    "id": 110,
+    "word": "tablet",
+    "meaning": "tableta",
+    "category": "technology",
+    "unit": "Unit 8",
+    "level": "easy",
+    "example": "She reads books on her tablet."
+  },
+  {
+    "id": 111,
+    "word": "printer",
+    "meaning": "impresora",
+    "category": "technology",
+    "unit": "Unit 8",
+    "level": "medium",
+    "example": "The printer needs more paper."
+  },
+  {
+    "id": 112,
+    "word": "camera",
+    "meaning": "camara",
+    "category": "technology",
+    "unit": "Unit 8",
+    "level": "medium",
+    "example": "The camera takes clear photos."
+  },
+  {
+    "id": 113,
+    "word": "charger",
+    "meaning": "cargador",
+    "category": "technology",
+    "unit": "Unit 8",
+    "level": "medium",
+    "example": "I forgot my charger at home."
+  },
+  {
+    "id": 114,
+    "word": "headphones",
+    "meaning": "audifonos",
+    "category": "technology",
+    "unit": "Unit 8",
+    "level": "medium",
+    "example": "Use headphones during the audio test."
+  },
+  {
+    "id": 115,
+    "word": "speaker",
+    "meaning": "altavoz",
+    "category": "technology",
+    "unit": "Unit 8",
+    "level": "medium",
+    "example": "The speaker is next to the computer."
+  },
+  {
+    "id": 116,
+    "word": "computer",
+    "meaning": "computadora",
+    "category": "technology",
+    "unit": "Unit 8",
+    "level": "hard",
+    "example": "The computer starts in a few seconds."
+  },
+  {
+    "id": 117,
+    "word": "internet",
+    "meaning": "internet",
+    "category": "technology",
+    "unit": "Unit 8",
+    "level": "hard",
+    "example": "The internet connection is stable today."
+  },
+  {
+    "id": 118,
+    "word": "password",
+    "meaning": "contrasena",
+    "category": "technology",
+    "unit": "Unit 8",
+    "level": "hard",
+    "example": "Never share your password with strangers."
+  },
+  {
+    "id": 119,
+    "word": "software",
+    "meaning": "software",
+    "category": "technology",
+    "unit": "Unit 8",
+    "level": "hard",
+    "example": "The software needs an update."
+  },
+  {
+    "id": 120,
+    "word": "download",
+    "meaning": "descargar",
+    "category": "technology",
+    "unit": "Unit 8",
+    "level": "hard",
+    "example": "Click here to download the file."
+  },
+  {
+    "id": 121,
+    "word": "wrote",
+    "meaning": "escribio",
+    "category": "past verbs",
+    "unit": "Unit 9",
+    "level": "easy",
+    "example": "She wrote her name on the paper yesterday."
+  },
+  {
+    "id": 122,
+    "word": "listened",
+    "meaning": "escucho",
+    "category": "past verbs",
+    "unit": "Unit 9",
+    "level": "easy",
+    "example": "He listened to the teacher carefully."
+  },
+  {
+    "id": 123,
+    "word": "spoke",
+    "meaning": "hablo",
+    "category": "past verbs",
+    "unit": "Unit 9",
+    "level": "easy",
+    "example": "She spoke clearly during the contest."
+  },
+  {
+    "id": 124,
+    "word": "read",
+    "meaning": "leyo",
+    "category": "past verbs",
+    "unit": "Unit 9",
+    "level": "easy",
+    "example": "He read the instructions first."
+  },
+  {
+    "id": 125,
+    "word": "learned",
+    "meaning": "aprendio",
+    "category": "past verbs",
+    "unit": "Unit 9",
+    "level": "easy",
+    "example": "She learned new words last week."
+  },
+  {
+    "id": 126,
+    "word": "traveled",
+    "meaning": "viajo",
+    "category": "past verbs",
+    "unit": "Unit 9",
+    "level": "medium",
+    "example": "My uncle traveled by bus yesterday."
+  },
+  {
+    "id": 127,
+    "word": "prepared",
+    "meaning": "preparo",
+    "category": "past verbs",
+    "unit": "Unit 9",
+    "level": "medium",
+    "example": "The team prepared for the spelling bee."
+  },
+  {
+    "id": 128,
+    "word": "practiced",
+    "meaning": "practico",
+    "category": "past verbs",
+    "unit": "Unit 9",
+    "level": "medium",
+    "example": "She practiced pronunciation after class."
+  },
+  {
+    "id": 129,
+    "word": "answered",
+    "meaning": "respondio",
+    "category": "past verbs",
+    "unit": "Unit 9",
+    "level": "medium",
+    "example": "He answered the question quickly."
+  },
+  {
+    "id": 130,
+    "word": "explained",
+    "meaning": "explico",
+    "category": "past verbs",
+    "unit": "Unit 9",
+    "level": "medium",
+    "example": "The teacher explained the rule well."
+  },
+  {
+    "id": 131,
+    "word": "discovered",
+    "meaning": "descubrio",
+    "category": "past verbs",
+    "unit": "Unit 9",
+    "level": "hard",
+    "example": "The scientist discovered a new method."
+  },
+  {
+    "id": 132,
+    "word": "improved",
+    "meaning": "mejoro",
+    "category": "past verbs",
+    "unit": "Unit 9",
+    "level": "hard",
+    "example": "Daily reading improved her vocabulary."
+  },
+  {
+    "id": 133,
+    "word": "communicated",
+    "meaning": "comunico",
+    "category": "past verbs",
+    "unit": "Unit 9",
+    "level": "hard",
+    "example": "The app communicated the result clearly."
+  },
+  {
+    "id": 134,
+    "word": "participated",
+    "meaning": "participo",
+    "category": "past verbs",
+    "unit": "Unit 9",
+    "level": "hard",
+    "example": "Each team participated in the final round."
+  },
+  {
+    "id": 135,
+    "word": "concentrated",
+    "meaning": "se concentro",
+    "category": "past verbs",
+    "unit": "Unit 9",
+    "level": "hard",
+    "example": "She concentrated before spelling the word."
   }
 ]
