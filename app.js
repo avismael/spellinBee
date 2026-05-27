@@ -1174,20 +1174,17 @@
     recognition.continuous = true;
     recognition.interimResults = true;
     recognition.maxAlternatives = 1;
+    let sessionTranscript = "";
     elements.speechResult.textContent = "Listening... spell the word now.";
     recognition.onresult = (event) => {
       if (state.speakingCompleted || !document.getElementById("spell-aloud")?.classList.contains("active")) return;
-      let interimTranscript = "";
-      for (let index = event.resultIndex; index < event.results.length; index += 1) {
+      const sessionParts = [];
+      for (let index = 0; index < event.results.length; index += 1) {
         const result = event.results[index];
-        const transcript = result[0].transcript;
-        if (result.isFinal) {
-          state.speakingRecognitionTranscript = `${state.speakingRecognitionTranscript} ${transcript}`.trim();
-        } else {
-          interimTranscript = `${interimTranscript} ${transcript}`.trim();
-        }
+        sessionParts.push(result[0].transcript);
       }
-      const fullTranscript = `${state.speakingRecognitionTranscript} ${interimTranscript}`.trim();
+      sessionTranscript = sessionParts.join(" ").trim();
+      const fullTranscript = `${state.speakingRecognitionTranscript} ${sessionTranscript}`.trim();
       state.speakingRecognitionCurrentTranscript = fullTranscript;
       state.spokenLetters = extractSpokenLetters(fullTranscript);
       renderSpeaking(elements);
@@ -1210,8 +1207,9 @@
       if (state.speakingRecognition === recognition) {
         state.speakingRecognition = null;
       }
-      if (state.speakingRecognitionCurrentTranscript) {
-        state.speakingRecognitionTranscript = state.speakingRecognitionCurrentTranscript;
+      if (sessionTranscript) {
+        state.speakingRecognitionTranscript = `${state.speakingRecognitionTranscript} ${sessionTranscript}`.trim();
+        state.speakingRecognitionCurrentTranscript = state.speakingRecognitionTranscript;
       }
       if (state.speakingRecognitionWanted && !state.speakingCompleted && document.getElementById("spell-aloud")?.classList.contains("active")) {
         window.setTimeout(() => {
