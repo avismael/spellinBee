@@ -494,8 +494,19 @@ button {
 }
 
 .competition-layout {
-  grid-template-columns: minmax(210px, 0.24fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.8fr);
   align-items: start;
+}
+
+.competition-board {
+  min-height: 100%;
+}
+
+.competition-judge {
+  display: grid;
+  gap: 0.85rem;
+  position: sticky;
+  top: 5.9rem;
 }
 
 .competition-heading h2 {
@@ -504,7 +515,7 @@ button {
 
 .projector-scoreboard {
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  margin: 1rem 0;
+  margin: 0 0 1rem;
 }
 
 .projector-scoreboard article {
@@ -540,6 +551,15 @@ button {
   background: var(--honey);
 }
 
+.projector-scoreboard article.buzzed-team {
+  background: #ddf9ec;
+  border: 2px solid rgba(23, 143, 90, 0.28);
+}
+
+.projector-scoreboard article.eliminated-team {
+  opacity: 0.58;
+}
+
 .competition-status {
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
@@ -566,6 +586,11 @@ button {
   border-radius: 0.85rem;
   background: var(--sky);
   font-weight: 900;
+}
+
+.competition-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .competition-word-stage {
@@ -644,12 +669,129 @@ button {
 }
 
 .points-grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   margin: 0 0 0.6rem;
+}
+
+.judge-panel .points-grid button,
+.judge-danger-button {
+  width: 100%;
+  min-height: 3.25rem;
+  border-radius: 1rem;
+  padding: 0.8rem 0.85rem;
+  line-height: 1.2;
+  text-align: center;
+  white-space: normal;
+}
+
+.judge-danger-button {
+  background: #ffe5e1;
+  color: var(--red);
+  font-weight: 900;
 }
 
 .judge-panel {
   margin-top: 0.85rem;
+}
+
+.competition-judge .judge-panel {
+  margin-top: 0;
+}
+
+.judge-block,
+.shortcut-panel {
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.78);
+  padding: 0.82rem 0.9rem;
+}
+
+.judge-section summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.judge-section summary::-webkit-details-marker {
+  display: none;
+}
+
+.judge-title {
+  margin: 0 0 0.6rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.judge-section .judge-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0;
+}
+
+.judge-section .judge-title::after {
+  content: "+";
+  color: var(--ink);
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.judge-section[open] .judge-title::after {
+  content: "-";
+}
+
+.judge-section > :not(summary) {
+  margin-top: 0.7rem;
+}
+
+.judge-inline-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+  margin-top: 0.65rem;
+}
+
+.team-key-list {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 0.7rem;
+}
+
+.team-key-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 5.25rem auto;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
+.team-name-editor {
+  min-width: 0;
+  padding: 0.58rem 0.7rem;
+  font-weight: 700;
+}
+
+.team-key-row select {
+  padding: 0.58rem 0.7rem;
+}
+
+.team-remove-button {
+  padding: 0.58rem 0.78rem;
+  white-space: nowrap;
+}
+
+.shortcut-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.45rem 0.75rem;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.shortcut-list strong {
+  color: var(--ink);
 }
 
 .scoreboard,
@@ -796,12 +938,19 @@ footer {
     margin-left: 0;
   }
 
+  .competition-judge {
+    position: static;
+  }
+
   .controls-grid,
   .score-strip,
   .points-grid,
   .competition-status,
   .clue-grid,
-  .voice-controls {
+  .voice-controls,
+  .competition-actions,
+  .judge-inline-actions,
+  .shortcut-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -878,7 +1027,10 @@ footer {
   .competition-status,
   .clue-grid,
   .voice-controls,
-  .answer-row {
+  .answer-row,
+  .competition-actions,
+  .judge-inline-actions,
+  .shortcut-list {
     grid-template-columns: 1fr;
   }
 

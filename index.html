@@ -160,33 +160,23 @@
 
       <section class="module view" id="competition" aria-labelledby="competition-title">
         <div class="section-heading competition-heading">
-          <p class="eyebrow">Team Challenge</p>
-          <h2 id="competition-title">Spelling Bee Competition</h2>
-          <p>Project the board, choose a word, press Your word is, and let the current team spell or write the answer.</p>
+          <!-- <p class="eyebrow">Team Challenge</p> -->
+          <!-- <h2 id="competition-title">Spelling Bee Competition</h2> -->
+          <!-- <p>Project the board, let the judge open the buzzer, and allow the first team to answer the active word.</p> -->
         </div>
 
-        <div class="scoreboard projector-scoreboard" id="scoreboard" aria-label="Team scoreboard"></div>
-
         <div class="competition-layout">
-          <aside class="team-setup">
-            <label>
-              Team name
-              <input id="team-name-input" placeholder="Team C">
-            </label>
-            <button type="button" id="add-team-btn">Add Team</button>
-            <button type="button" id="reset-competition-btn">Reset Competition</button>
-          </aside>
-
-          <article class="competition-card">
+          <article class="competition-card competition-board">
+            <div class="scoreboard projector-scoreboard" id="scoreboard" aria-label="Team scoreboard"></div>
             <div class="competition-status">
               <div class="timer" aria-label="Competition timer">
                 <span id="timer-value">60</span>
                 <small>seconds</small>
               </div>
               <div>
-                <p class="turn-label">Turn</p>
-                <h3 id="current-team">Team A</h3>
-                <p class="turn-instruction">Press Your word is for the current team.</p>
+                <p class="turn-label">Buzzed Team</p>
+                <h3 id="current-team">No team selected</h3>
+                <p class="turn-instruction" id="competition-status-message">Round ready. Press New Word.</p>
               </div>
             </div>
             <div class="competition-word-stage">
@@ -207,26 +197,65 @@
                 <strong id="competition-level">-</strong>
               </article>
             </div>
-            <div class="listen-actions">
-              <button class="primary" type="button" id="competition-word-btn">New Word</button>
-              <button class="secondary" type="button" id="competition-listen-btn">Your word is...</button>
-              <button type="button" id="competition-example-btn">Read Example</button>
-              <button type="button" id="reveal-word-btn">Reveal Word</button>
-              <button type="button" id="reveal-example-btn">Reveal Phrase</button>
-              <button type="button" id="hide-word-btn">Hide Word</button>
-            </div>
-            <div class="judge-panel">
-              <p>Judge controls</p>
+            <p id="winner-display" class="winner"></p>
+          </article>
+
+          <aside class="team-setup competition-judge">
+            <details class="judge-block judge-section" open>
+              <summary class="judge-title">Teams</summary>
+              <label>
+                Team name
+                <input id="team-name-input" placeholder="Team C">
+              </label>
+              <div class="team-key-list" id="competition-team-keys" aria-label="Team buzzer keys"></div>
+              <div class="judge-inline-actions">
+                <button type="button" id="add-team-btn">Add Team</button>
+                <button type="button" id="reset-competition-btn">Reset Competition</button>
+              </div>
+            </details>
+
+            <details class="judge-block judge-section" open>
+              <summary class="judge-title">Round controls</summary>
+              <div class="listen-actions competition-actions">
+                <button class="primary" type="button" id="competition-word-btn">New Word</button>
+                <button class="secondary" type="button" id="competition-open-buzzer-btn">Open Buzzer</button>
+                <button type="button" id="competition-close-buzzer-btn">Close Buzzer</button>
+                <button class="secondary" type="button" id="competition-listen-btn">Your word is...</button>
+                <button type="button" id="competition-example-btn">Read Example</button>
+                <button type="button" id="reveal-word-btn">Reveal Word</button>
+                <button type="button" id="reveal-example-btn">Reveal Phrase</button>
+                <button type="button" id="hide-word-btn">Hide Word</button>
+              </div>
+            </details>
+
+            <details class="judge-panel judge-section" open>
+              <summary class="judge-title">Judge controls</summary>
               <div class="points-grid">
                 <button class="primary" type="button" data-points="10" data-reason="spelling">Correct Spelling +10</button>
                 <button type="button" data-points="5" data-reason="pronunciation">Good Pronunciation +5</button>
                 <button type="button" data-points="5" data-reason="sentence">Own Sentence +5</button>
                 <button type="button" data-points="5" data-reason="no hint">No Hint Bonus +5</button>
               </div>
-              <button type="button" id="competition-wrong-btn">Incorrect / Next Team</button>
+              <button class="judge-danger-button" type="button" id="competition-wrong-btn">Incorrect / Reopen</button>
+            </details>
+
+            <div class="judge-block shortcut-panel">
+              <p class="judge-title">Keyboard shortcuts</p>
+              <div class="shortcut-list" aria-label="Judge keyboard shortcuts">
+                <span><strong>N</strong> New word</span>
+                <span><strong>B</strong> Open buzzer</span>
+                <span><strong>C</strong> Close buzzer</span>
+                <span><strong>V</strong> Say word</span>
+                <span><strong>E</strong> Read example</span>
+                <span><strong>W</strong> Reveal word</span>
+                <span><strong>P</strong> Reveal phrase</span>
+                <span><strong>H</strong> Hide clues</span>
+                <span><strong>1-4</strong> Score points</span>
+                <span><strong>0</strong> Incorrect</span>
+                <span><strong>R</strong> Reset</span>
+              </div>
             </div>
-            <p id="winner-display" class="winner"></p>
-          </article>
+          </aside>
         </div>
       </section>
 

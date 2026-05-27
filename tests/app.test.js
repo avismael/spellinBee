@@ -3,24 +3,34 @@ const assert = require("node:assert/strict");
 
 const {
   addMistake,
+  assignTeamKeyToTeam,
+  assignNextTeamKey,
   buildCelebrationMessage,
   buildCompetitionPrompt,
   buildSpellingProgress,
   buildSpeechText,
+  canTeamBuzz,
+  formatTeamKey,
   formatSpeechRecognitionError,
   extractSpokenLetters,
   formatCompetitionWord,
   formatHiddenValue,
   findBestVoice,
   filterWords,
+  getCompetitionShortcutAction,
   getWordsForCategory,
   groupWordsByCategory,
   getWinner,
+  isTeamKeyAvailable,
   isCorrectAnswer,
+  isEditableTarget,
   isSpellingComplete,
   normalizeAnswer,
   readMistakes,
+  renameTeamById,
+  removeTeamById,
   readVoiceSettings,
+  resolveBuzzerTeam,
   scoreCompetitionAnswer,
   scoreVoice,
   selectNextWord,
@@ -80,6 +90,67 @@ test("scores competition teams immutably", () => {
   const updated = scoreCompetitionAnswer(teams, 1, 10);
   assert.equal(updated[1].score, 10);
   assert.equal(teams[1].score, 0);
+});
+
+test("assigns the next available buzzer key", () => {
+  const teams = [{ key: "a" }, { key: "s" }];
+  assert.equal(assignNextTeamKey(teams), "d");
+});
+
+test("validates that a buzzer key is unique per team", () => {
+  const teams = [{ id: 1, key: "a" }, { id: 2, key: "s" }];
+  assert.equal(isTeamKeyAvailable(teams, 1, "a"), true);
+  assert.equal(isTeamKeyAvailable(teams, 1, "s"), false);
+});
+
+test("reassigns a buzzer key only when available", () => {
+  const teams = [{ id: 1, key: "a" }, { id: 2, key: "s" }];
+  assert.deepEqual(assignTeamKeyToTeam(teams, 1, "d"), [{ id: 1, key: "d" }, { id: 2, key: "s" }]);
+  assert.deepEqual(assignTeamKeyToTeam(teams, 1, "s"), teams);
+});
+
+test("removes teams while keeping the minimum competition size", () => {
+  const teams = [{ id: 1 }, { id: 2 }, { id: 3 }];
+  assert.deepEqual(removeTeamById(teams, 3), [{ id: 1 }, { id: 2 }]);
+  assert.deepEqual(removeTeamById([{ id: 1 }, { id: 2 }], 2), [{ id: 1 }, { id: 2 }]);
+});
+
+test("renames a team only when the new name is not empty", () => {
+  const teams = [{ id: 1, name: "Team A" }, { id: 2, name: "Team B" }];
+  assert.deepEqual(renameTeamById(teams, 1, "Blue Bees"), [{ id: 1, name: "Blue Bees" }, { id: 2, name: "Team B" }]);
+  assert.deepEqual(renameTeamById(teams, 1, "   "), teams);
+});
+
+test("resolves a team from a buzzer key", () => {
+  const teams = [{ id: 1, key: "a" }, { id: 2, key: "s" }];
+  assert.deepEqual(resolveBuzzerTeam("S", teams), teams[1]);
+  assert.equal(resolveBuzzerTeam("x", teams), null);
+});
+
+test("allows buzz only for eligible teams", () => {
+  assert.equal(canTeamBuzz(1, [], true, false), true);
+  assert.equal(canTeamBuzz(1, [1], true, false), false);
+  assert.equal(canTeamBuzz(1, [], false, false), false);
+  assert.equal(canTeamBuzz(1, [], true, true), false);
+});
+
+test("maps keyboard shortcuts for judge controls", () => {
+  assert.equal(getCompetitionShortcutAction("N"), "new-word");
+  assert.equal(getCompetitionShortcutAction("0"), "mark-incorrect");
+  assert.equal(getCompetitionShortcutAction("?"), "");
+});
+
+test("formats team key labels for the scoreboard", () => {
+  assert.equal(formatTeamKey("a"), "A");
+  assert.equal(formatTeamKey(";"), ";");
+});
+
+test("detects editable DOM targets", () => {
+  const editableTarget = { closest: (selector) => selector === "input, select, textarea, [contenteditable='true']" ? {} : null };
+  const plainTarget = { closest: () => null };
+  assert.equal(isEditableTarget(editableTarget), true);
+  assert.equal(isEditableTarget(plainTarget), false);
+  assert.equal(isEditableTarget(null), false);
 });
 
 test("hides competition word until revealed", () => {

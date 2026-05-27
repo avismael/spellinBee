@@ -8,6 +8,31 @@
   const VOICE_SETTINGS_KEY = "spellingBeeInseVoiceSettings";
   const PREFERRED_VOICE_NAMES = ["natural", "online", "neural", "google", "microsoft", "zira", "aria", "jenny", "samantha", "daniel"];
   const SPEAKING_SECONDS = 30;
+  const COMPETITION_SECONDS = 60;
+  const DEFAULT_TEAM_KEYS = ["a", "s", "d", "f", "j", "k", "l", ";"];
+  const COMPETITION_SHORTCUTS = {
+    n: "new-word",
+    b: "open-buzzer",
+    c: "close-buzzer",
+    v: "say-word",
+    e: "read-example",
+    w: "reveal-word",
+    p: "reveal-phrase",
+    h: "hide-clues",
+    1: "score-10",
+    2: "score-5-pronunciation",
+    3: "score-5-sentence",
+    4: "score-5-no-hint",
+    0: "mark-incorrect",
+    r: "reset-competition"
+  };
+
+  function buildDefaultTeams() {
+    return [
+      { id: 1, name: "Team A", score: 0, key: DEFAULT_TEAM_KEYS[0] },
+      { id: 2, name: "Team B", score: 0, key: DEFAULT_TEAM_KEYS[1] }
+    ];
+  }
 
   const state = {
     words: [],
@@ -28,16 +53,19 @@
     speakingTimerId: null,
     speakingSecondsLeft: SPEAKING_SECONDS,
     mistakes: [],
-    teams: [
-      { id: 1, name: "Team A", score: 0 },
-      { id: 2, name: "Team B", score: 0 }
-    ],
-    currentTeamIndex: 0,
+    teams: buildDefaultTeams(),
     competitionWord: null,
     competitionWordRevealed: false,
     competitionExampleRevealed: false,
+    competitionUsedWordIds: [],
+    buzzedTeamId: null,
+    buzzerOpen: false,
+    buzzerLocked: false,
+    eliminatedTeamIdsForRound: [],
+    competitionStatusMessage: "Round ready. Press New Word.",
+    projectorSplitMode: true,
     timerId: null,
-    secondsLeft: 60,
+    secondsLeft: COMPETITION_SECONDS,
     selectedWordBankCategory: "",
     voices: [],
     selectedVoiceName: "",
@@ -102,6 +130,62 @@
 
   function scoreCompetitionAnswer(teams, teamIndex, points) {
     return teams.map((team, index) => index === teamIndex ? { ...team, score: team.score + points } : team);
+  }
+
+  function formatTeamKey(key) {
+    return key === ";" ? ";" : String(key || "").toUpperCase();
+  }
+
+  function assignNextTeamKey(teams, availableKeys = DEFAULT_TEAM_KEYS) {
+    const usedKeys = new Set(teams.map((team) => team.key).filter(Boolean));
+    return availableKeys.find((key) => !usedKeys.has(key)) || "";
+  }
+
+  function isTeamKeyAvailable(teams, teamId, key) {
+    return !teams.some((team) => team.id !== teamId && team.key === key);
+  }
+
+  function assignTeamKeyToTeam(teams, teamId, key, availableKeys = DEFAULT_TEAM_KEYS) {
+    if (!availableKeys.includes(key) || !isTeamKeyAvailable(teams, teamId, key)) {
+      return teams;
+    }
+
+    return teams.map((team) => team.id === teamId ? { ...team, key } : team);
+  }
+
+  function removeTeamById(teams, teamId, minimumTeams = 2) {
+    if (teams.length <= minimumTeams) {
+      return teams;
+    }
+
+    return teams.filter((team) => team.id !== teamId);
+  }
+
+  function renameTeamById(teams, teamId, name) {
+    const trimmedName = String(name || "").trim();
+    if (!trimmedName) {
+      return teams;
+    }
+
+    return teams.map((team) => team.id === teamId ? { ...team, name: trimmedName } : team);
+  }
+
+  function resolveBuzzerTeam(key, teams) {
+    const normalizedKey = String(key || "").toLowerCase();
+    return teams.find((team) => team.key === normalizedKey) || null;
+  }
+
+  function canTeamBuzz(teamId, eliminatedTeamIds, buzzerOpen, buzzerLocked) {
+    return Boolean(teamId) && buzzerOpen && !buzzerLocked && !eliminatedTeamIds.includes(teamId);
+  }
+
+  function getCompetitionShortcutAction(key) {
+    return COMPETITION_SHORTCUTS[String(key || "").toLowerCase()] || "";
+  }
+
+  function isEditableTarget(target) {
+    if (!target || typeof target.closest !== "function") return false;
+    return Boolean(target.closest("input, select, textarea, [contenteditable='true']"));
   }
 
   function formatCompetitionWord(word, revealed) {
@@ -281,16 +365,20 @@
       manualSpeakingCorrect: document.getElementById("manual-speaking-correct"),
       manualSpeakingWrong: document.getElementById("manual-speaking-wrong"),
       teamNameInput: document.getElementById("team-name-input"),
+      competitionTeamKeys: document.getElementById("competition-team-keys"),
       addTeamBtn: document.getElementById("add-team-btn"),
       resetCompetitionBtn: document.getElementById("reset-competition-btn"),
       timerValue: document.getElementById("timer-value"),
       currentTeam: document.getElementById("current-team"),
+      competitionStatusMessage: document.getElementById("competition-status-message"),
       competitionWord: document.getElementById("competition-word"),
       competitionWordLabel: document.getElementById("competition-word-label"),
       competitionMeaning: document.getElementById("competition-meaning"),
       competitionExample: document.getElementById("competition-example"),
       competitionLevel: document.getElementById("competition-level"),
       competitionWordBtn: document.getElementById("competition-word-btn"),
+      competitionOpenBuzzerBtn: document.getElementById("competition-open-buzzer-btn"),
+      competitionCloseBuzzerBtn: document.getElementById("competition-close-buzzer-btn"),
       competitionListenBtn: document.getElementById("competition-listen-btn"),
       competitionExampleBtn: document.getElementById("competition-example-btn"),
       revealWordBtn: document.getElementById("reveal-word-btn"),
@@ -300,6 +388,7 @@
       pointsButtons: document.querySelectorAll("[data-points]"),
       winnerDisplay: document.getElementById("winner-display"),
       scoreboard: document.getElementById("scoreboard"),
+      competitionRoot: document.getElementById("competition"),
       practiceMistakesBtn: document.getElementById("practice-mistakes-btn"),
       clearMistakesBtn: document.getElementById("clear-mistakes-btn"),
       mistakesList: document.getElementById("mistakes-list"),
@@ -328,6 +417,41 @@
 
   function speakWord(word, includeExample = false) {
     return speak(buildSpeechText(word, includeExample));
+  }
+
+  function playCompetitionRoundCue(onComplete = () => {}) {
+    if (typeof window === "undefined") {
+      onComplete();
+      return;
+    }
+
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) {
+      onComplete();
+      return;
+    }
+
+    try {
+      const audioContext = new AudioContextClass();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      oscillator.type = "triangle";
+      oscillator.frequency.setValueAtTime(740, audioContext.currentTime);
+      oscillator.frequency.linearRampToValueAtTime(880, audioContext.currentTime + 0.12);
+      gainNode.gain.setValueAtTime(0.0001, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.07, audioContext.currentTime + 0.02);
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.18);
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      oscillator.start();
+      oscillator.stop(audioContext.currentTime + 0.18);
+      oscillator.onended = () => {
+        audioContext.close().catch(() => {});
+        onComplete();
+      };
+    } catch (_error) {
+      onComplete();
+    }
   }
 
   function setFeedback(elements, message, type) {
@@ -671,79 +795,235 @@
     document.getElementById(viewId)?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
-  function nextTeam() {
-    state.currentTeamIndex = (state.currentTeamIndex + 1) % state.teams.length;
+  function stopCompetitionTimer() {
+    clearInterval(state.timerId);
+    state.timerId = null;
+  }
+
+  function startCompetitionTimer(elements) {
+    stopCompetitionTimer();
+    state.secondsLeft = COMPETITION_SECONDS;
+    elements.timerValue.textContent = state.secondsLeft;
+    state.timerId = setInterval(() => {
+      state.secondsLeft -= 1;
+      elements.timerValue.textContent = state.secondsLeft;
+      if (state.secondsLeft <= 0) {
+        stopCompetitionTimer();
+        state.buzzerOpen = false;
+        state.buzzerLocked = false;
+        state.buzzedTeamId = null;
+        state.competitionStatusMessage = "Time is up. Reopen the buzzer or choose a new word.";
+        renderCompetition(elements);
+      }
+    }, 1000);
+  }
+
+  function getBuzzedTeam(teams, buzzedTeamId) {
+    return teams.find((team) => team.id === buzzedTeamId) || null;
+  }
+
+  function getEligibleBuzzTeams(teams, eliminatedTeamIds) {
+    return teams.filter((team) => !eliminatedTeamIds.includes(team.id));
+  }
+
+  function lockCompetitionBuzzer(elements, teamId) {
+    const team = getBuzzedTeam(state.teams, teamId);
+    if (!canTeamBuzz(teamId, state.eliminatedTeamIdsForRound, state.buzzerOpen, state.buzzerLocked) || !team) {
+      return false;
+    }
+
+    stopCompetitionTimer();
+    state.buzzedTeamId = teamId;
+    state.buzzerLocked = true;
+    state.buzzerOpen = false;
+    state.competitionStatusMessage = `${team.name} buzzed first. Judge the answer.`;
+    renderCompetition(elements);
+    return true;
+  }
+
+  function clearCompetitionBuzzer() {
+    state.buzzedTeamId = null;
+    state.buzzerOpen = false;
+    state.buzzerLocked = false;
+  }
+
+  function startCompetitionRound(elements) {
+    const result = selectNextWord(state.words, state.competitionUsedWordIds);
+    state.competitionWord = result.word;
+    state.competitionUsedWordIds = result.usedIds;
+    state.competitionWordRevealed = false;
+    state.competitionExampleRevealed = false;
+    state.eliminatedTeamIdsForRound = [];
+    clearCompetitionBuzzer();
+    stopCompetitionTimer();
+    state.secondsLeft = COMPETITION_SECONDS;
+    if (!state.competitionWord) {
+      state.competitionStatusMessage = "No words available.";
+      renderCompetition(elements);
+      return;
+    }
+
+    openCompetitionBuzzer(elements);
+    playCompetitionRoundCue(() => speakWord(state.competitionWord));
+  }
+
+  function openCompetitionBuzzer(elements) {
+    if (!state.competitionWord) {
+      state.competitionStatusMessage = "Choose a new word before opening the buzzer.";
+      renderCompetition(elements);
+      return;
+    }
+
+    const eligibleTeams = getEligibleBuzzTeams(state.teams, state.eliminatedTeamIdsForRound);
+    if (!eligibleTeams.length) {
+      state.competitionStatusMessage = "All teams already tried this word. Choose a new word.";
+      renderCompetition(elements);
+      return;
+    }
+
+    state.buzzedTeamId = null;
+    state.buzzerLocked = false;
+    state.buzzerOpen = true;
+    state.competitionStatusMessage = "New round started. Buzzer open.";
+    startCompetitionTimer(elements);
+    renderCompetition(elements);
+  }
+
+  function closeCompetitionBuzzer(elements, message = "Buzzer closed.") {
+    stopCompetitionTimer();
+    state.buzzerOpen = false;
+    state.buzzerLocked = false;
+    state.buzzedTeamId = null;
+    state.competitionStatusMessage = message;
+    renderCompetition(elements);
+  }
+
+  function markCompetitionIncorrect(elements) {
+    if (!state.competitionWord) {
+      state.competitionStatusMessage = "Start a round before marking an answer.";
+      renderCompetition(elements);
+      return;
+    }
+
+    const team = getBuzzedTeam(state.teams, state.buzzedTeamId);
+    if (!team) {
+      state.competitionStatusMessage = "No buzzed team to mark incorrect.";
+      renderCompetition(elements);
+      return;
+    }
+
+    stopCompetitionTimer();
+    state.eliminatedTeamIdsForRound = [...state.eliminatedTeamIdsForRound, team.id];
+    clearCompetitionBuzzer();
+    state.competitionStatusMessage = getEligibleBuzzTeams(state.teams, state.eliminatedTeamIdsForRound).length
+      ? `${team.name} was incorrect. Judge can reopen the buzzer.`
+      : "All teams already tried this word. Choose a new word.";
+    renderCompetition(elements);
+  }
+
+  function awardCompetitionPoints(elements, points) {
+    const team = getBuzzedTeam(state.teams, state.buzzedTeamId);
+    if (!team) {
+      state.competitionStatusMessage = "A team must buzz first before awarding points.";
+      renderCompetition(elements);
+      return;
+    }
+
+    const teamIndex = state.teams.findIndex((item) => item.id === team.id);
+    if (teamIndex === -1) return;
+    state.teams = scoreCompetitionAnswer(state.teams, teamIndex, points);
+    stopCompetitionTimer();
+    state.buzzerOpen = false;
+    state.buzzerLocked = true;
+    state.competitionStatusMessage = `${team.name} scored ${points} points. Choose a new word for the next round.`;
+    renderCompetition(elements);
+  }
+
+  function resetCompetition(elements) {
+    stopCompetitionTimer();
+    state.teams = buildDefaultTeams();
+    state.competitionWord = null;
+    state.competitionWordRevealed = false;
+    state.competitionExampleRevealed = false;
+    state.competitionUsedWordIds = [];
+    state.eliminatedTeamIdsForRound = [];
+    clearCompetitionBuzzer();
+    state.secondsLeft = COMPETITION_SECONDS;
+    state.competitionStatusMessage = "Competition reset. Press New Word.";
+    renderCompetition(elements);
   }
 
   function renderCompetition(elements) {
-    const team = state.teams[state.currentTeamIndex];
-    elements.currentTeam.textContent = team ? team.name : "No teams";
+    const buzzedTeam = getBuzzedTeam(state.teams, state.buzzedTeamId);
+    elements.currentTeam.textContent = buzzedTeam ? buzzedTeam.name : state.buzzerOpen ? "Waiting for buzzers" : "No team selected";
+    elements.competitionStatusMessage.textContent = state.competitionStatusMessage;
     elements.competitionWord.textContent = formatCompetitionWord(state.competitionWord, state.competitionWordRevealed);
     elements.competitionWordLabel.textContent = state.competitionWordRevealed ? "Answer revealed" : "Word is hidden";
     elements.competitionMeaning.textContent = state.competitionWord ? state.competitionWord.meaning : "Start a round to show the clue.";
     elements.competitionExample.textContent = formatHiddenValue(state.competitionWord?.example, state.competitionExampleRevealed, "Hidden phrase");
     elements.competitionLevel.textContent = state.competitionWord ? `${state.competitionWord.category} | ${state.competitionWord.unit} | ${state.competitionWord.level}` : "-";
     elements.timerValue.textContent = state.secondsLeft;
+    elements.competitionOpenBuzzerBtn.disabled = !state.competitionWord || state.buzzerOpen || !getEligibleBuzzTeams(state.teams, state.eliminatedTeamIdsForRound).length;
+    elements.competitionCloseBuzzerBtn.disabled = !state.buzzerOpen && !state.buzzedTeamId;
+    elements.competitionWrongBtn.disabled = !state.buzzedTeamId;
     elements.scoreboard.innerHTML = "";
 
-    state.teams.forEach((item, index) => {
+    state.teams.forEach((item) => {
       const card = document.createElement("article");
-      card.className = index === state.currentTeamIndex ? "active-team" : "";
-      card.innerHTML = `<p>${index === state.currentTeamIndex ? "Turn now" : "Waiting"}</p><h3>${item.name}</h3><strong>${item.score}</strong><span>points</span>`;
+      const classes = [];
+      if (item.id === state.buzzedTeamId) classes.push("buzzed-team");
+      if (state.eliminatedTeamIdsForRound.includes(item.id)) classes.push("eliminated-team");
+      card.className = classes.join(" ");
+      const status = item.id === state.buzzedTeamId
+        ? "Buzzed"
+        : state.eliminatedTeamIdsForRound.includes(item.id)
+          ? "Tried"
+          : state.buzzerOpen
+            ? "Ready"
+            : "Waiting";
+      card.innerHTML = `<p>${status}</p><h3>${item.name}</h3><strong>${item.score}</strong><span>Key ${formatTeamKey(item.key)}</span>`;
       elements.scoreboard.appendChild(card);
     });
 
+    if (elements.competitionTeamKeys) {
+      elements.competitionTeamKeys.innerHTML = "";
+      state.teams.forEach((team) => {
+        const row = document.createElement("label");
+        row.className = "team-key-row";
+        const nameInput = document.createElement("input");
+        nameInput.type = "text";
+        nameInput.className = "team-name-editor";
+        nameInput.dataset.teamId = String(team.id);
+        nameInput.value = team.name;
+        nameInput.setAttribute("aria-label", `${team.name} name`);
+
+        const select = document.createElement("select");
+        select.dataset.teamId = String(team.id);
+        DEFAULT_TEAM_KEYS.forEach((key) => {
+          const option = document.createElement("option");
+          option.value = key;
+          option.textContent = formatTeamKey(key);
+          option.selected = team.key === key;
+          option.disabled = !isTeamKeyAvailable(state.teams, team.id, key) && team.key !== key;
+          select.appendChild(option);
+        });
+
+        const removeButton = document.createElement("button");
+        removeButton.type = "button";
+        removeButton.className = "team-remove-button";
+        removeButton.dataset.teamId = String(team.id);
+        removeButton.textContent = "Remove";
+        removeButton.disabled = state.teams.length <= 2;
+
+        row.appendChild(nameInput);
+        row.appendChild(select);
+        row.appendChild(removeButton);
+        elements.competitionTeamKeys.appendChild(row);
+      });
+    }
+
     const winner = getWinner(state.teams);
     elements.winnerDisplay.textContent = winner && winner.score > 0 ? `Current leader: ${winner.name}` : "";
-  }
-
-  function startTimer(elements) {
-    clearInterval(state.timerId);
-    state.secondsLeft = 60;
-    state.competitionWordRevealed = false;
-    state.competitionExampleRevealed = false;
-    renderCompetition(elements);
-    state.timerId = setInterval(() => {
-      state.secondsLeft -= 1;
-      elements.timerValue.textContent = state.secondsLeft;
-      if (state.secondsLeft <= 0) {
-        clearInterval(state.timerId);
-        nextTeam();
-        renderCompetition(elements);
-      }
-    }, 1000);
-  }
-
-  function chooseCompetitionWord(elements) {
-    const result = selectNextWord(state.words, state.roundWordIds);
-    state.competitionWord = result.word;
-    state.competitionWordRevealed = false;
-    state.competitionExampleRevealed = false;
-    state.roundWordIds = result.usedIds;
-    startTimer(elements);
-    if (state.competitionWord) {
-      speakWord(state.competitionWord);
-    }
-  }
-
-  function awardCompetitionPoints(elements, points) {
-    state.teams = scoreCompetitionAnswer(state.teams, state.currentTeamIndex, points);
-    nextTeam();
-    renderCompetition(elements);
-  }
-
-  function resetCompetition(elements) {
-    clearInterval(state.timerId);
-    state.teams = [
-      { id: 1, name: "Team A", score: 0 },
-      { id: 2, name: "Team B", score: 0 }
-    ];
-    state.currentTeamIndex = 0;
-    state.competitionWord = null;
-    state.competitionWordRevealed = false;
-    state.competitionExampleRevealed = false;
-    state.secondsLeft = 60;
-    renderCompetition(elements);
   }
 
   function recognizeSpeech(elements) {
@@ -794,6 +1074,73 @@
     } catch (_error) {
       return FALLBACK_WORDS;
     }
+  }
+
+  function handleCompetitionAction(elements, action) {
+    switch (action) {
+      case "new-word":
+        startCompetitionRound(elements);
+        break;
+      case "open-buzzer":
+        openCompetitionBuzzer(elements);
+        break;
+      case "close-buzzer":
+        closeCompetitionBuzzer(elements, "Buzzer closed by judge.");
+        break;
+      case "say-word":
+        speak(buildCompetitionPrompt(state.competitionWord));
+        break;
+      case "read-example":
+        speakWord(state.competitionWord, true);
+        break;
+      case "reveal-word":
+        state.competitionWordRevealed = true;
+        renderCompetition(elements);
+        break;
+      case "reveal-phrase":
+        state.competitionExampleRevealed = true;
+        renderCompetition(elements);
+        break;
+      case "hide-clues":
+        state.competitionWordRevealed = false;
+        state.competitionExampleRevealed = false;
+        renderCompetition(elements);
+        break;
+      case "score-10":
+        awardCompetitionPoints(elements, 10);
+        break;
+      case "score-5-pronunciation":
+      case "score-5-sentence":
+      case "score-5-no-hint":
+        awardCompetitionPoints(elements, 5);
+        break;
+      case "mark-incorrect":
+        markCompetitionIncorrect(elements);
+        break;
+      case "reset-competition":
+        resetCompetition(elements);
+        break;
+      default:
+        break;
+    }
+  }
+
+  function handleCompetitionKeydown(elements, event) {
+    if (!document.getElementById("competition")?.classList.contains("active") || isEditableTarget(event.target)) {
+      return;
+    }
+
+    const buzzedTeam = resolveBuzzerTeam(event.key, state.teams);
+    if (buzzedTeam && canTeamBuzz(buzzedTeam.id, state.eliminatedTeamIdsForRound, state.buzzerOpen, state.buzzerLocked)) {
+      event.preventDefault();
+      lockCompetitionBuzzer(elements, buzzedTeam.id);
+      return;
+    }
+
+    const action = getCompetitionShortcutAction(event.key);
+    if (!action) return;
+    event.preventDefault();
+    handleCompetitionAction(elements, action);
   }
 
   function bindEvents(elements) {
@@ -871,34 +1218,92 @@
     elements.addTeamBtn.addEventListener("click", () => {
       const name = elements.teamNameInput.value.trim();
       if (!name) return;
-      state.teams.push({ id: Date.now(), name, score: 0 });
+      const key = assignNextTeamKey(state.teams);
+      if (!key) {
+        state.competitionStatusMessage = "No buzzer key is available for more teams.";
+        renderCompetition(elements);
+        return;
+      }
+      state.teams.push({ id: Date.now(), name, score: 0, key });
       elements.teamNameInput.value = "";
+      state.competitionStatusMessage = `${name} added with buzzer key ${formatTeamKey(key)}.`;
+      renderCompetition(elements);
+    });
+    elements.competitionTeamKeys.addEventListener("change", (event) => {
+      const target = event.target;
+      if (target instanceof HTMLSelectElement) {
+        const teamId = Number(target.dataset.teamId);
+        const nextKey = String(target.value || "").toLowerCase();
+        const currentTeam = state.teams.find((team) => team.id === teamId);
+        if (!currentTeam) return;
+
+        if (!isTeamKeyAvailable(state.teams, teamId, nextKey)) {
+          target.value = currentTeam.key;
+          state.competitionStatusMessage = `Key ${formatTeamKey(nextKey)} is already assigned to another team.`;
+          renderCompetition(elements);
+          return;
+        }
+
+        state.teams = assignTeamKeyToTeam(state.teams, teamId, nextKey);
+        state.competitionStatusMessage = `${currentTeam.name} now uses key ${formatTeamKey(nextKey)}.`;
+        renderCompetition(elements);
+        return;
+      }
+
+      if (target instanceof HTMLInputElement && target.classList.contains("team-name-editor")) {
+        const teamId = Number(target.dataset.teamId);
+        const currentTeam = state.teams.find((team) => team.id === teamId);
+        if (!currentTeam) return;
+        const renamedTeams = renameTeamById(state.teams, teamId, target.value);
+        if (renamedTeams === state.teams) {
+          target.value = currentTeam.name;
+          return;
+        }
+
+        const renamedTeam = renamedTeams.find((team) => team.id === teamId);
+        state.teams = renamedTeams;
+        state.competitionStatusMessage = `${renamedTeam.name} was renamed.`;
+        renderCompetition(elements);
+      }
+    });
+    elements.competitionTeamKeys.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLButtonElement) || !target.classList.contains("team-remove-button")) return;
+      const teamId = Number(target.dataset.teamId);
+      const team = state.teams.find((item) => item.id === teamId);
+      if (!team) return;
+      const nextTeams = removeTeamById(state.teams, teamId);
+      if (nextTeams === state.teams) {
+        state.competitionStatusMessage = "At least two teams are required for competition.";
+        renderCompetition(elements);
+        return;
+      }
+
+      state.teams = nextTeams;
+      state.eliminatedTeamIdsForRound = state.eliminatedTeamIdsForRound.filter((id) => id !== teamId);
+      if (state.buzzedTeamId === teamId) {
+        clearCompetitionBuzzer();
+        stopCompetitionTimer();
+        state.competitionStatusMessage = `${team.name} was removed. Judge can reopen the buzzer.`;
+      } else {
+        state.competitionStatusMessage = `${team.name} was removed from the competition.`;
+      }
       renderCompetition(elements);
     });
     elements.resetCompetitionBtn.addEventListener("click", () => resetCompetition(elements));
-    elements.competitionWordBtn.addEventListener("click", () => chooseCompetitionWord(elements));
-    elements.competitionListenBtn.addEventListener("click", () => speak(buildCompetitionPrompt(state.competitionWord)));
-    elements.competitionExampleBtn.addEventListener("click", () => speakWord(state.competitionWord, true));
-    elements.revealWordBtn.addEventListener("click", () => {
-      state.competitionWordRevealed = true;
-      renderCompetition(elements);
-    });
-    elements.revealExampleBtn.addEventListener("click", () => {
-      state.competitionExampleRevealed = true;
-      renderCompetition(elements);
-    });
-    elements.hideWordBtn.addEventListener("click", () => {
-      state.competitionWordRevealed = false;
-      state.competitionExampleRevealed = false;
-      renderCompetition(elements);
-    });
+    elements.competitionWordBtn.addEventListener("click", () => handleCompetitionAction(elements, "new-word"));
+    elements.competitionOpenBuzzerBtn.addEventListener("click", () => handleCompetitionAction(elements, "open-buzzer"));
+    elements.competitionCloseBuzzerBtn.addEventListener("click", () => handleCompetitionAction(elements, "close-buzzer"));
+    elements.competitionListenBtn.addEventListener("click", () => handleCompetitionAction(elements, "say-word"));
+    elements.competitionExampleBtn.addEventListener("click", () => handleCompetitionAction(elements, "read-example"));
+    elements.revealWordBtn.addEventListener("click", () => handleCompetitionAction(elements, "reveal-word"));
+    elements.revealExampleBtn.addEventListener("click", () => handleCompetitionAction(elements, "reveal-phrase"));
+    elements.hideWordBtn.addEventListener("click", () => handleCompetitionAction(elements, "hide-clues"));
     elements.pointsButtons.forEach((button) => {
       button.addEventListener("click", () => awardCompetitionPoints(elements, Number(button.dataset.points)));
     });
-    elements.competitionWrongBtn.addEventListener("click", () => {
-      nextTeam();
-      renderCompetition(elements);
-    });
+    elements.competitionWrongBtn.addEventListener("click", () => handleCompetitionAction(elements, "mark-incorrect"));
+    document.addEventListener("keydown", (event) => handleCompetitionKeydown(elements, event));
     elements.practiceMistakesBtn.addEventListener("click", () => {
       if (!state.mistakes.length) return;
       showView(elements, "practice");
@@ -939,24 +1344,34 @@
   if (typeof module !== "undefined") {
     module.exports = {
       addMistake,
+      assignTeamKeyToTeam,
       buildCelebrationMessage,
       buildSpeechText,
       buildCompetitionPrompt,
+      canTeamBuzz,
       buildSpellingProgress,
+      formatTeamKey,
       formatSpeechRecognitionError,
       formatCompetitionWord,
       formatHiddenValue,
+      getCompetitionShortcutAction,
       extractSpokenLetters,
       findBestVoice,
       filterWords,
+      assignNextTeamKey,
       getWordsForCategory,
       groupWordsByCategory,
       getUniqueValues,
       getWinner,
+      isTeamKeyAvailable,
       isSpellingComplete,
       isCorrectAnswer,
+      isEditableTarget,
       normalizeAnswer,
       readMistakes,
+      renameTeamById,
+      removeTeamById,
+      resolveBuzzerTeam,
       scoreCompetitionAnswer,
       scoreVoice,
       selectNextWord,
