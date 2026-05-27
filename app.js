@@ -229,6 +229,24 @@
       .replace(/[^a-z]/g, "");
   }
 
+  function removeUnexpectedDuplicateLetters(word, spokenLetters) {
+    const target = normalizeAnswer(word).replace(/[^a-z]/g, "");
+    const spoken = extractSpokenLetters(spokenLetters);
+    let cleaned = "";
+
+    for (const letter of spoken) {
+      if (cleaned.length >= target.length) break;
+      const expectedLetter = target[cleaned.length];
+      const previousLetter = cleaned[cleaned.length - 1];
+      if (letter === previousLetter && expectedLetter !== letter) {
+        continue;
+      }
+      cleaned += letter;
+    }
+
+    return cleaned;
+  }
+
   function buildSpellingProgress(word, spokenLetters) {
     const target = normalizeAnswer(word).replace(/[^a-z]/g, "");
     const spoken = extractSpokenLetters(spokenLetters).slice(0, target.length);
@@ -1186,7 +1204,7 @@
       sessionTranscript = sessionParts.join(" ").trim();
       const fullTranscript = `${state.speakingRecognitionTranscript} ${sessionTranscript}`.trim();
       state.speakingRecognitionCurrentTranscript = fullTranscript;
-      state.spokenLetters = extractSpokenLetters(fullTranscript);
+      state.spokenLetters = removeUnexpectedDuplicateLetters(state.speakingPracticeWord.word, fullTranscript);
       renderSpeaking(elements);
       if (isSpellingComplete(state.speakingPracticeWord.word, state.spokenLetters)) {
         state.speakingRecognitionWanted = false;
@@ -1194,7 +1212,7 @@
         recognition.stop();
         return;
       }
-      elements.speechResult.textContent = `Recognized: ${fullTranscript}`;
+      elements.speechResult.textContent = `Recognized letters: ${state.spokenLetters.toUpperCase()}`;
     };
     recognition.onerror = (event) => {
       if (state.speakingCompleted || !document.getElementById("spell-aloud")?.classList.contains("active")) return;
@@ -1531,6 +1549,7 @@
       formatHiddenValue,
       getCompetitionShortcutAction,
       extractSpokenLetters,
+      removeUnexpectedDuplicateLetters,
       findBestVoice,
       filterWords,
       assignNextTeamKey,

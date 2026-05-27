@@ -27,6 +27,7 @@ const {
   isSpellingComplete,
   normalizeAnswer,
   readMistakes,
+  removeUnexpectedDuplicateLetters,
   renameTeamById,
   removeTeamById,
   readVoiceSettings,
@@ -211,6 +212,11 @@ test("builds speech text with optional example context", () => {
 test("extracts spoken spelling letters", () => {
   assert.equal(extractSpokenLetters("t e a c h e r"), "teacher");
   assert.equal(extractSpokenLetters("tee ee ay sea aitch ee are"), "teacher");
+});
+
+test("removes unexpected duplicate spoken letters", () => {
+  assert.equal(removeUnexpectedDuplicateLetters("cat", "see see ay tea"), "cat");
+  assert.equal(removeUnexpectedDuplicateLetters("letter", "el ee tea tea ee are"), "letter");
 });
 
 test("builds spelling progress slots", () => {
