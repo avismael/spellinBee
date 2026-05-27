@@ -52,6 +52,9 @@
     speakingAdvanceTimer: null,
     speakingTimerId: null,
     speakingRecognition: null,
+    speakingRecognitionWanted: false,
+    speakingRecognitionTranscript: "",
+    speakingRecognitionCurrentTranscript: "",
     speakingSecondsLeft: SPEAKING_SECONDS,
     mistakes: [],
     teams: buildDefaultTeams(),
@@ -647,6 +650,7 @@
   }
 
   function stopSpeakingRecognition(elements) {
+    state.speakingRecognitionWanted = false;
     if (!state.speakingRecognition) return;
     const recognition = state.speakingRecognition;
     state.speakingRecognition = null;
@@ -698,6 +702,7 @@
       elements.speakingTimerValue.textContent = state.speakingSecondsLeft;
       if (state.speakingSecondsLeft <= 0) {
         stopSpeakingTimer();
+        stopSpeakingRecognition(elements);
         state.speakingCompleted = true;
         elements.speechResult.textContent = "Time is up. Next word coming up...";
         scheduleNextSpeakingWord(elements);
@@ -711,10 +716,13 @@
     state.speakingPracticeWord = result.word;
     state.speakingWordIds = result.usedIds;
     state.spokenLetters = "";
+    state.speakingRecognitionTranscript = "";
+    state.speakingRecognitionCurrentTranscript = "";
     state.speakingCompleted = false;
     state.speakingSecondsLeft = SPEAKING_SECONDS;
     stopSpeakingTimer();
     stopSpeakingAdvanceTimer();
+    stopSpeakingRecognition(elements);
     elements.manualSpellingInput.value = "";
     elements.speechResult.textContent = "Listen to the word, then press Start Spelling.";
     renderSpeaking(elements);
@@ -1141,7 +1149,7 @@
     elements.winnerDisplay.textContent = winner && winner.score > 0 ? `Current leader: ${winner.name}` : "";
   }
 
-  function recognizeSpeech(elements) {
+  function recognizeSpeech(elements, preserveTranscript = false) {
     if (!state.speakingPracticeWord) {
       elements.speechResult.textContent = "Choose a random word first.";
       return;
@@ -1153,31 +1161,63 @@
       return;
     }
 
-    stopSpeakingRecognition(elements);
+    if (!preserveTranscript) {
+      stopSpeakingRecognition(elements);
+    }
+    state.speakingRecognitionWanted = true;
+    if (!preserveTranscript) {
+      state.speakingRecognitionTranscript = "";
+      state.speakingRecognitionCurrentTranscript = "";
+    }
     const recognition = new Recognition();
     recognition.lang = "en-US";
+    recognition.continuous = true;
     recognition.interimResults = true;
     recognition.maxAlternatives = 1;
     elements.speechResult.textContent = "Listening... spell the word now.";
     recognition.onresult = (event) => {
       if (state.speakingCompleted || !document.getElementById("spell-aloud")?.classList.contains("active")) return;
-      const transcript = Array.from(event.results).map((result) => result[0].transcript).join(" ");
-      state.spokenLetters = extractSpokenLetters(transcript);
+      let interimTranscript = "";
+      for (let index = event.resultIndex; index < event.results.length; index += 1) {
+        const result = event.results[index];
+        const transcript = result[0].transcript;
+        if (result.isFinal) {
+          state.speakingRecognitionTranscript = `${state.speakingRecognitionTranscript} ${transcript}`.trim();
+        } else {
+          interimTranscript = `${interimTranscript} ${transcript}`.trim();
+        }
+      }
+      const fullTranscript = `${state.speakingRecognitionTranscript} ${interimTranscript}`.trim();
+      state.speakingRecognitionCurrentTranscript = fullTranscript;
+      state.spokenLetters = extractSpokenLetters(fullTranscript);
       renderSpeaking(elements);
       if (isSpellingComplete(state.speakingPracticeWord.word, state.spokenLetters)) {
-        completeSpeakingWord(elements, transcript);
+        state.speakingRecognitionWanted = false;
+        completeSpeakingWord(elements, fullTranscript);
         recognition.stop();
         return;
       }
-      elements.speechResult.textContent = `Recognized: ${transcript}`;
+      elements.speechResult.textContent = `Recognized: ${fullTranscript}`;
     };
     recognition.onerror = (event) => {
       if (state.speakingCompleted || !document.getElementById("spell-aloud")?.classList.contains("active")) return;
+      if (["not-allowed", "service-not-allowed", "language-not-supported"].includes(event.error)) {
+        state.speakingRecognitionWanted = false;
+      }
       elements.speechResult.textContent = formatSpeechRecognitionError(event);
     };
     recognition.onend = () => {
       if (state.speakingRecognition === recognition) {
         state.speakingRecognition = null;
+      }
+      if (state.speakingRecognitionCurrentTranscript) {
+        state.speakingRecognitionTranscript = state.speakingRecognitionCurrentTranscript;
+      }
+      if (state.speakingRecognitionWanted && !state.speakingCompleted && document.getElementById("spell-aloud")?.classList.contains("active")) {
+        window.setTimeout(() => {
+          if (!state.speakingRecognitionWanted || state.speakingRecognition || state.speakingCompleted) return;
+          recognizeSpeech(elements, true);
+        }, 180);
       }
     };
     try {
@@ -1187,6 +1227,7 @@
         startSpeakingTimer(elements);
       }
     } catch (error) {
+      state.speakingRecognitionWanted = false;
       elements.speechResult.textContent = formatSpeechRecognitionError(error);
     }
   }
