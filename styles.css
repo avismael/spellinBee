@@ -1342,21 +1342,17 @@ footer {
   }
 
   .practice-card {
-    padding: 0.8rem;
+    padding: 0.65rem;
   }
 
   .practice-layout {
-    gap: 0.7rem;
+    gap: 0.6rem;
   }
 
   .practice-summary-bar {
-    position: sticky;
-    top: 5rem;
-    z-index: 2;
-    gap: 0.7rem;
-    padding: 0.75rem;
-    box-shadow: 0 10px 24px rgba(27, 27, 41, 0.08);
-    backdrop-filter: blur(14px);
+    gap: 0.55rem;
+    padding: 0;
+    background: transparent;
   }
 
   .nav-actions button,
@@ -1394,26 +1390,33 @@ footer {
 
   .score-strip {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.55rem;
+    gap: 0.45rem;
   }
 
   .score-strip span {
-    padding: 0.65rem 0.75rem;
-    font-size: 0.88rem;
+    border-radius: 0.9rem;
+    padding: 0.55rem 0.65rem;
+    font-size: 0.84rem;
   }
 
-  .practice-round-meta {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.55rem;
+  .practice-secondary-stat,
+  .practice-round-meta,
+  .practice-word-meta,
+  #practice .section-heading p:last-child {
+    display: none;
   }
 
-  .practice-filters-card {
-    grid-column: 1 / -1;
+  .practice-main-panel {
+    gap: 0.65rem;
   }
 
-  .practice-word-meta {
-    grid-template-columns: repeat(3, minmax(6.25rem, 1fr));
-    gap: 0.55rem;
+  .word-stage.practice-stage {
+    padding: 1rem;
+    margin-bottom: 0;
+  }
+
+  .word-stage h3 {
+    margin-bottom: 0;
   }
 
   .practice-word-meta article,
@@ -1423,14 +1426,13 @@ footer {
   }
 
   .practice-primary-actions {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.6rem;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
   }
 
   .practice-listen-btn {
-    grid-column: 1 / -1;
-    min-height: 3.15rem;
-    font-size: 1rem;
+    min-height: 3.35rem;
+    font-size: 1.05rem;
   }
 
   .practice-listen-context-btn,
@@ -1441,6 +1443,7 @@ footer {
 
   .answer-form {
     gap: 0.6rem;
+    margin-top: 0;
   }
 
   .answer-row input {
@@ -1454,7 +1457,7 @@ footer {
   }
 
   .practice-sidebar {
-    gap: 0.7rem;
+    gap: 0.5rem;
   }
 
   .practice-helper-details {
@@ -1462,7 +1465,7 @@ footer {
   }
 
   .practice-helper-details summary {
-    padding: 0.65rem 0.7rem;
+    padding: 0.58rem 0.65rem;
   }
 
   .practice-helper-details .practice-steps,
