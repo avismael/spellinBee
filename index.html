@@ -18,32 +18,56 @@
       <button class="menu-toggle" type="button" id="menu-toggle" aria-expanded="false" aria-controls="nav-actions">Menu</button>
       <div class="nav-actions" id="nav-actions">
         <button type="button" data-view="home">Home</button>
-        <button type="button" data-view="practice">Practice Mode</button>
-        <button type="button" data-view="spell-aloud">Spell Aloud</button>
+        <button type="button" data-view="practice">Practice</button>
+        <button type="button" data-view="spell-aloud">Speak</button>
         <button type="button" data-view="competition">Competition</button>
-        <button type="button" data-view="mistakes">Review Mistakes</button>
-        <button type="button" data-view="word-bank">Word Bank</button>
+        <button type="button" data-view="library">Library</button>
+        <details class="nav-settings">
+          <summary aria-label="Voice settings" title="Voice settings">
+            <span aria-hidden="true">⚙</span>
+          </summary>
+          <div class="nav-settings-panel">
+            <div class="voice-controls" aria-label="Voice settings">
+              <label>
+                Voice
+                <select id="voice-select">
+                  <option value="">Best available English voice</option>
+                </select>
+              </label>
+              <label>
+                Speed
+                <input id="voice-rate" type="range" min="0.65" max="1" value="0.78" step="0.01">
+              </label>
+              <button type="button" id="test-voice-btn">Test Voice</button>
+            </div>
+          </div>
+        </details>
       </div>
     </nav>
 
     <header class="hero view active" id="home">
       <section class="hero-grid">
         <div class="hero-copy">
-          <p class="eyebrow">English vocabulary practice</p>
-          <h1>Listen carefully. Spell clearly. Win as a team.</h1>
+          <p class="eyebrow">English classroom game</p>
+          <h1>Practice spelling without the clutter.</h1>
           <p>
-            A classroom-ready web app for listening, writing, speaking and spelling activities with instant feedback.
+            Listen, type, speak and compete with a focused flow that works on the projector and on phones.
           </p>
           <div class="hero-buttons">
             <button class="primary" type="button" data-view="practice">Start Practice</button>
             <button class="secondary" type="button" data-view="competition">Start Competition</button>
-            <button type="button" data-view="spell-aloud">Practice Speaking</button>
+            <button type="button" data-view="spell-aloud">Speak</button>
           </div>
         </div>
         <div class="bee-card" aria-label="App highlights">
           <div class="bee-icon" aria-hidden="true">BEE</div>
-          <h2>Classroom MVP</h2>
-          <p>Word bank, speech synthesis, scoring, mistakes review, timer and team scoreboard.</p>
+          <h2>Ready for class</h2>
+          <div class="hero-highlights">
+            <span>Listen</span>
+            <span>Write</span>
+            <span>Compete</span>
+          </div>
+          <p>Voice settings, mistake review and vocabulary library stay close without crowding the main task.</p>
         </div>
       </section>
     </header>
@@ -76,93 +100,147 @@
         </details>
 
         <article class="practice-card">
-          <div class="score-strip">
-            <span>Score: <strong id="score-value">0</strong></span>
-            <span>Correct: <strong id="correct-value">0</strong></span>
-            <span>Wrong: <strong id="wrong-value">0</strong></span>
-            <span>Progress: <strong id="progress-value">0/0</strong></span>
-          </div>
+          <div class="practice-layout">
+            <div class="practice-main-panel">
+              <div class="practice-summary-bar" aria-label="Practice summary">
+                <div class="score-strip">
+                  <span>Score: <strong id="score-value">0</strong></span>
+                  <span>Correct: <strong id="correct-value">0</strong></span>
+                  <span>Wrong: <strong id="wrong-value">0</strong></span>
+                  <span>Progress: <strong id="progress-value">0/0</strong></span>
+                </div>
+                <div class="practice-round-meta">
+                  <article class="practice-state-card">
+                    <span class="practice-meta-label">Round status</span>
+                    <strong id="practice-state">Loading words...</strong>
+                  </article>
+                  <article class="practice-filters-card">
+                    <span class="practice-meta-label">Active filters</span>
+                    <strong id="practice-active-filters">All words</strong>
+                  </article>
+                  <article class="practice-remaining-card">
+                    <span class="practice-meta-label">Words left</span>
+                    <strong id="practice-remaining-value">0</strong>
+                  </article>
+                </div>
+              </div>
 
-          <div class="word-stage">
-            <p class="hint-label">Meaning</p>
-            <h3 id="meaning-display">Loading words...</h3>
-            <p class="hint-label">Word</p>
-            <p id="practice-word-display">Hidden word</p>
-            <p class="hint-label">Phrase</p>
-            <p id="example-display">Please wait while the word bank is loaded.</p>
-          </div>
+              <div class="word-stage practice-stage">
+                <p class="hint-label">Meaning</p>
+                <h3 id="meaning-display">Loading words...</h3>
+                <div class="practice-word-meta" aria-label="Current word details">
+                  <article>
+                    <span class="practice-meta-label">Category</span>
+                    <strong id="practice-category-value">-</strong>
+                  </article>
+                  <article>
+                    <span class="practice-meta-label">Unit</span>
+                    <strong id="practice-unit-value">-</strong>
+                  </article>
+                  <article>
+                    <span class="practice-meta-label">Level</span>
+                    <strong id="practice-level-value">-</strong>
+                  </article>
+                </div>
+              </div>
 
-          <div class="listen-actions">
-            <button type="button" id="listen-context-btn">Listen + Example</button>
-            <button type="button" id="reveal-practice-word-btn">Reveal Word</button>
-            <button type="button" id="reveal-practice-example-btn">Reveal Phrase</button>
-            <button type="button" id="hide-practice-clues-btn">Hide Word/Phrase</button>
-            <button class="secondary" type="button" id="next-word-btn">Skip / Next Word</button>
-          </div>
+                <div class="practice-primary-actions">
+                  <button class="primary practice-listen-btn" type="button" id="listen-btn">Listen</button>
+                  <button class="practice-listen-context-btn" type="button" id="listen-context-btn">Listen + Example</button>
+                  <button class="secondary practice-next-btn" type="button" id="next-word-btn">Skip / Next Word</button>
+                </div>
 
-          <details class="voice-settings">
-            <summary>Voice settings</summary>
-            <div class="voice-controls" aria-label="Voice settings">
-              <label>
-                Voice
-                <select id="voice-select">
-                  <option value="">Best available English voice</option>
-                </select>
-              </label>
-              <label>
-                Speed
-                <input id="voice-rate" type="range" min="0.65" max="1" value="0.78" step="0.01">
-              </label>
-              <button type="button" id="test-voice-btn">Test Voice</button>
+                <form class="answer-form" id="answer-form">
+                  <label for="answer-input">Write the word you heard</label>
+                  <div class="answer-row">
+                    <input id="answer-input" autocomplete="off" autocapitalize="none" spellcheck="false" enterkeyhint="done" placeholder="Type the English word">
+                    <button class="primary" type="submit">Check</button>
+                  </div>
+                </form>
+
+              <div class="feedback" id="feedback" role="status" aria-live="polite">Choose a word and press Listen.</div>
             </div>
-          </details>
 
-          <form class="answer-form" id="answer-form">
-            <label for="answer-input">Write the word you heard</label>
-            <div class="answer-row">
-              <input id="answer-input" autocomplete="off" placeholder="Type the English word">
-              <button type="button" id="listen-btn">Listen</button>
-              <button class="primary" type="submit">Check</button>
-            </div>
-          </form>
+              <aside class="practice-sidebar" aria-label="Practice support panels">
+                <details class="practice-helper-card practice-helper-details">
+                  <summary>
+                    <span class="eyebrow">Quick guide</span>
+                    <strong>How to use this round</strong>
+                  </summary>
+                  <ol class="practice-steps">
+                    <li>Listen to the word first.</li>
+                    <li>Type the English spelling.</li>
+                    <li>Check your answer and continue.</li>
+                  </ol>
+                </details>
 
-          <div class="feedback" id="feedback" role="status" aria-live="polite">Choose a word and press Listen.</div>
+                <details class="practice-helper-card practice-helper-details">
+                  <summary>
+                    <span class="eyebrow">Clues</span>
+                    <strong>Word and phrase help</strong>
+                  </summary>
+                  <div class="practice-clue-grid">
+                    <article>
+                      <span class="practice-meta-label">Word</span>
+                      <strong id="practice-word-display">Hidden word</strong>
+                    </article>
+                    <article>
+                      <span class="practice-meta-label">Phrase</span>
+                      <strong id="example-display">Please wait while the word bank is loaded.</strong>
+                    </article>
+                  </div>
+                  <div class="listen-actions practice-secondary-actions">
+                    <button type="button" id="reveal-practice-word-btn">Reveal Word</button>
+                    <button type="button" id="reveal-practice-example-btn">Reveal Phrase</button>
+                    <button type="button" id="hide-practice-clues-btn">Hide Word/Phrase</button>
+                  </div>
+                </details>
+
+            </aside>
+          </div>
         </article>
       </section>
 
       <section class="module view" id="spell-aloud" aria-labelledby="spell-title">
         <div class="section-heading">
           <p class="eyebrow">Speaking Practice</p>
-          <h2 id="spell-title">Spell Aloud</h2>
-          <p>Try automatic speech recognition or let the teacher validate manually.</p>
+          <h2 id="spell-title">Speak the Spelling</h2>
+          <p>Start a word, spell it aloud and use the manual fallback when speech recognition needs help.</p>
         </div>
-        <div class="speaking-card">
-          <p>Current challenge: <strong id="speaking-word">No word selected</strong></p>
-          <p class="speaking-timer">Time to answer: <strong id="speaking-timer-value">15</strong>s</p>
-          <div class="spelling-slots" id="spelling-slots" aria-label="Spelling progress"></div>
-          <div class="manual-actions">
-            <button class="primary" type="button" id="new-speaking-word-btn">Random Word</button>
-            <button type="button" id="listen-speaking-word-btn">Listen</button>
-            <button type="button" id="speak-btn">Start Spelling</button>
-            <button type="button" id="clear-speaking-btn">Clear</button>
+        <div class="speaking-card speaking-layout">
+          <div class="speaking-challenge-card">
+            <div class="speaking-header-row">
+              <p>Current challenge: <strong id="speaking-word">No word selected</strong></p>
+              <button class="speaking-timer" type="button" id="speaking-timer-stop-btn" aria-label="Stop speaking practice activity">Time: <strong id="speaking-timer-value">60</strong>s</button>
+            </div>
+            <div class="spelling-slots" id="spelling-slots" aria-label="Spelling progress"></div>
+            <p class="speech-result" id="speech-result">Speech recognition result will appear here.</p>
           </div>
-          <p id="speech-result">Speech recognition result will appear here.</p>
-          <label>
-            Manual spelling fallback
-            <input id="manual-spelling-input" autocomplete="off" placeholder="Type letters if speech recognition fails">
-          </label>
-          <div class="manual-actions">
-            <button type="button" id="manual-speaking-correct">Correct Speaking</button>
-            <button type="button" id="manual-speaking-wrong">Incorrect Speaking</button>
+
+          <div class="speaking-actions-card">
+            <button class="primary speaking-main-action" type="button" id="speak-btn">Start Spelling</button>
+            <div class="manual-actions speaking-secondary-actions">
+              <button class="secondary" type="button" id="new-speaking-word-btn">Random Word</button>
+              <button type="button" id="listen-speaking-word-btn">Listen</button>
+              <button type="button" id="clear-speaking-btn">Clear</button>
+            </div>
+            <label>
+              Manual spelling fallback
+              <input id="manual-spelling-input" autocomplete="off" placeholder="Type letters if speech recognition fails">
+            </label>
+            <div class="manual-actions speaking-validation-actions">
+              <button type="button" id="manual-speaking-correct">Correct Speaking</button>
+              <button type="button" id="manual-speaking-wrong">Incorrect Speaking</button>
+            </div>
           </div>
         </div>
       </section>
 
       <section class="module view" id="competition" aria-labelledby="competition-title">
         <div class="section-heading competition-heading">
-          <!-- <p class="eyebrow">Team Challenge</p> -->
-          <!-- <h2 id="competition-title">Spelling Bee Competition</h2> -->
-          <!-- <p>Project the board, let the judge open the buzzer, and allow the first team to answer the active word.</p> -->
+          <p class="eyebrow">Team Challenge</p>
+          <h2 id="competition-title">Competition Board</h2>
+          <p>Project the scoreboard, open the buzzer and judge each team from one clean control panel.</p>
         </div>
 
         <div class="competition-layout">
@@ -239,8 +317,8 @@
               <button class="judge-danger-button" type="button" id="competition-wrong-btn">Incorrect / Reopen</button>
             </details>
 
-            <div class="judge-block shortcut-panel">
-              <p class="judge-title">Keyboard shortcuts</p>
+            <details class="judge-block judge-section shortcut-panel">
+              <summary class="judge-title">Keyboard shortcuts</summary>
               <div class="shortcut-list" aria-label="Judge keyboard shortcuts">
                 <span><strong>N</strong> New word</span>
                 <span><strong>B</strong> Open buzzer</span>
@@ -254,31 +332,47 @@
                 <span><strong>0</strong> Incorrect</span>
                 <span><strong>R</strong> Reset</span>
               </div>
-            </div>
+            </details>
           </aside>
         </div>
       </section>
 
-      <section class="module view" id="mistakes" aria-labelledby="mistakes-title">
+      <section class="module view" id="library" aria-labelledby="library-title">
         <div class="section-heading">
-          <p class="eyebrow">Review Mistakes</p>
-          <h2 id="mistakes-title">Words to Practice Again</h2>
-          <p>Incorrect answers are saved locally on this device.</p>
+          <p class="eyebrow">Library</p>
+          <h2 id="library-title">Review and Explore Words</h2>
+          <p>Practice missed words or browse the full vocabulary bank from one place.</p>
         </div>
-        <div class="mistake-actions">
-          <button class="primary" type="button" id="practice-mistakes-btn">Practice Mistakes</button>
-          <button type="button" id="clear-mistakes-btn">Clear Mistakes</button>
-        </div>
-        <div class="word-list" id="mistakes-list"></div>
-      </section>
 
-      <section class="module view" id="word-bank" aria-labelledby="bank-title">
-        <div class="section-heading">
-          <p class="eyebrow">Word Bank</p>
-          <h2 id="bank-title">Vocabulary Loaded from JSON</h2>
-          <p>Use the filters above in practice mode to focus the round.</p>
+        <div class="library-tabs" role="tablist" aria-label="Library sections">
+          <button class="library-tab" type="button" id="library-tab-mistakes" role="tab" aria-controls="library-panel-mistakes" aria-selected="true" data-library-tab="mistakes">Mistakes</button>
+          <button class="library-tab" type="button" id="library-tab-word-bank" role="tab" aria-controls="library-panel-word-bank" aria-selected="false" data-library-tab="word-bank">Word Bank</button>
         </div>
-        <div class="word-list" id="word-bank-list"></div>
+
+        <section class="library-panel" id="library-panel-mistakes" role="tabpanel" aria-labelledby="library-tab-mistakes" data-library-panel="mistakes">
+          <div class="library-panel-heading">
+            <div>
+              <p class="eyebrow">Review Mistakes</p>
+              <h3>Words to Practice Again</h3>
+            </div>
+            <div class="mistake-actions">
+              <button class="primary" type="button" id="practice-mistakes-btn">Practice Mistakes</button>
+              <button type="button" id="clear-mistakes-btn">Clear Mistakes</button>
+            </div>
+          </div>
+          <div class="word-list" id="mistakes-list"></div>
+        </section>
+
+        <section class="library-panel" id="library-panel-word-bank" role="tabpanel" aria-labelledby="library-tab-word-bank" data-library-panel="word-bank" hidden>
+          <div class="library-panel-heading">
+            <div>
+              <p class="eyebrow">Word Bank</p>
+              <h3>Vocabulary Loaded from JSON</h3>
+            </div>
+            <p>Use the filters in Practice to focus a round.</p>
+          </div>
+          <div class="word-list" id="word-bank-list"></div>
+        </section>
       </section>
     </main>
 

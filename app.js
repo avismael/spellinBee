@@ -51,6 +51,7 @@
     speakingCompleted: false,
     speakingAdvanceTimer: null,
     speakingTimerId: null,
+    speakingRecognition: null,
     speakingSecondsLeft: SPEAKING_SECONDS,
     mistakes: [],
     teams: buildDefaultTeams(),
@@ -67,6 +68,7 @@
     timerId: null,
     secondsLeft: COMPETITION_SECONDS,
     selectedWordBankCategory: "",
+    activeLibraryTab: "mistakes",
     voices: [],
     selectedVoiceName: "",
     voiceRate: 0.78,
@@ -342,8 +344,15 @@
       testVoiceBtn: document.getElementById("test-voice-btn"),
       answerForm: document.getElementById("answer-form"),
       answerInput: document.getElementById("answer-input"),
+      answerSubmitBtn: document.querySelector("#answer-form button[type='submit']"),
       feedback: document.getElementById("feedback"),
       meaningDisplay: document.getElementById("meaning-display"),
+      practiceState: document.getElementById("practice-state"),
+      practiceActiveFilters: document.getElementById("practice-active-filters"),
+      practiceRemainingValue: document.getElementById("practice-remaining-value"),
+      practiceCategoryValue: document.getElementById("practice-category-value"),
+      practiceUnitValue: document.getElementById("practice-unit-value"),
+      practiceLevelValue: document.getElementById("practice-level-value"),
       practiceWordDisplay: document.getElementById("practice-word-display"),
       exampleDisplay: document.getElementById("example-display"),
       revealPracticeWordBtn: document.getElementById("reveal-practice-word-btn"),
@@ -354,6 +363,7 @@
       wrongValue: document.getElementById("wrong-value"),
       progressValue: document.getElementById("progress-value"),
       speakingWord: document.getElementById("speaking-word"),
+      speakingTimerStopBtn: document.getElementById("speaking-timer-stop-btn"),
       speakingTimerValue: document.getElementById("speaking-timer-value"),
       spellingSlots: document.getElementById("spelling-slots"),
       newSpeakingWordBtn: document.getElementById("new-speaking-word-btn"),
@@ -392,6 +402,8 @@
       practiceMistakesBtn: document.getElementById("practice-mistakes-btn"),
       clearMistakesBtn: document.getElementById("clear-mistakes-btn"),
       mistakesList: document.getElementById("mistakes-list"),
+      libraryTabButtons: document.querySelectorAll("[data-library-tab]"),
+      libraryPanels: document.querySelectorAll("[data-library-panel]"),
       wordBankList: document.getElementById("word-bank-list"),
       copyrightYear: document.getElementById("copyright-year")
     };
@@ -537,20 +549,66 @@
     state.speakingWordIds = [];
   }
 
+  function formatPracticeFilters(elements) {
+    const labels = [
+      ["Category", elements.categorySelect.value],
+      ["Unit", elements.unitSelect.value],
+      ["Level", elements.levelSelect.value]
+    ]
+      .filter(([, value]) => value && value !== "all")
+      .map(([label, value]) => `${label}: ${value}`);
+
+    return labels.length ? labels.join(" | ") : "All words";
+  }
+
   function renderPractice(elements) {
+    const hasWord = Boolean(state.currentWord);
+    const hasPool = state.filteredWords.length > 0;
+    const remainingWords = Math.max(state.filteredWords.length - state.roundWordIds.length, 0);
+    const clueVisible = state.currentWordRevealed || state.currentExampleRevealed;
+
     elements.scoreValue.textContent = state.score;
     elements.correctValue.textContent = state.correct;
     elements.wrongValue.textContent = state.wrong;
     elements.progressValue.textContent = `${state.totalAnswered}/${state.filteredWords.length}`;
+    elements.practiceActiveFilters.textContent = formatPracticeFilters(elements);
+    elements.practiceRemainingValue.textContent = String(remainingWords);
+    elements.practiceState.textContent = !hasPool
+      ? "No words match these filters"
+      : !hasWord
+        ? "Round ready"
+        : clueVisible
+          ? "Clues visible"
+          : "Ready to listen";
 
-    if (!state.currentWord) {
+    [
+      elements.listenBtn,
+      elements.listenContextBtn,
+      elements.revealPracticeWordBtn,
+      elements.revealPracticeExampleBtn,
+      elements.hidePracticeCluesBtn,
+      elements.answerInput,
+      elements.answerSubmitBtn
+    ].forEach((element) => {
+      element.disabled = !hasWord;
+    });
+    elements.nextWordBtn.disabled = !hasPool;
+    elements.answerInput.placeholder = hasWord ? "Type the English word" : "No word available with these filters";
+
+    if (!hasWord) {
       elements.meaningDisplay.textContent = "No words available";
       elements.practiceWordDisplay.textContent = "Hidden word";
       elements.exampleDisplay.textContent = "Change the filters or add more words to data/words.json.";
+      elements.practiceCategoryValue.textContent = "-";
+      elements.practiceUnitValue.textContent = "-";
+      elements.practiceLevelValue.textContent = "-";
       return;
     }
 
     elements.meaningDisplay.textContent = state.currentWord.meaning;
+    elements.practiceCategoryValue.textContent = state.currentWord.category || "-";
+    elements.practiceUnitValue.textContent = state.currentWord.unit || "-";
+    elements.practiceLevelValue.textContent = state.currentWord.level || "-";
     elements.practiceWordDisplay.textContent = formatHiddenValue(state.currentWord.word, state.currentWordRevealed, "Hidden word");
     elements.exampleDisplay.textContent = formatHiddenValue(state.currentWord.example, state.currentExampleRevealed, "Hidden phrase");
   }
@@ -581,11 +639,48 @@
     }
   }
 
-  function scheduleNextSpeakingWord(elements, delay = 1200) {
+  function stopSpeakingAdvanceTimer() {
     if (state.speakingAdvanceTimer) {
       window.clearTimeout(state.speakingAdvanceTimer);
+      state.speakingAdvanceTimer = null;
     }
-    state.speakingAdvanceTimer = window.setTimeout(() => chooseSpeakingWord(elements), delay);
+  }
+
+  function stopSpeakingRecognition(elements) {
+    if (!state.speakingRecognition) return;
+    const recognition = state.speakingRecognition;
+    state.speakingRecognition = null;
+    recognition.onresult = null;
+    recognition.onerror = null;
+    recognition.onend = null;
+    try {
+      recognition.abort();
+    } catch (_error) {
+      try {
+        recognition.stop();
+      } catch (__error) {}
+    }
+  }
+
+  function stopSpeakingActivity(elements, message = "Speaking practice paused. Choose a word to resume.") {
+    stopSpeakingTimer();
+    stopSpeakingAdvanceTimer();
+    stopSpeakingRecognition(elements);
+    if (typeof window !== "undefined" && window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+    if (elements?.speechResult) {
+      elements.speechResult.textContent = message;
+    }
+  }
+
+  function scheduleNextSpeakingWord(elements, delay = 1200) {
+    stopSpeakingAdvanceTimer();
+    state.speakingAdvanceTimer = window.setTimeout(() => {
+      state.speakingAdvanceTimer = null;
+      if (!document.getElementById("spell-aloud")?.classList.contains("active")) return;
+      chooseSpeakingWord(elements);
+    }, delay);
   }
 
   function startSpeakingTimer(elements) {
@@ -595,6 +690,10 @@
     if (!state.speakingPracticeWord) return;
 
     state.speakingTimerId = window.setInterval(() => {
+      if (!document.getElementById("spell-aloud")?.classList.contains("active")) {
+        stopSpeakingActivity(elements);
+        return;
+      }
       state.speakingSecondsLeft -= 1;
       elements.speakingTimerValue.textContent = state.speakingSecondsLeft;
       if (state.speakingSecondsLeft <= 0) {
@@ -615,10 +714,7 @@
     state.speakingCompleted = false;
     state.speakingSecondsLeft = SPEAKING_SECONDS;
     stopSpeakingTimer();
-    if (state.speakingAdvanceTimer) {
-      window.clearTimeout(state.speakingAdvanceTimer);
-      state.speakingAdvanceTimer = null;
-    }
+    stopSpeakingAdvanceTimer();
     elements.manualSpellingInput.value = "";
     elements.speechResult.textContent = "Listen to the word, then press Start Spelling.";
     renderSpeaking(elements);
@@ -638,7 +734,7 @@
     scheduleNextSpeakingWord(elements, 1800);
   }
 
-  function chooseNextPracticeWord(elements) {
+  function chooseNextPracticeWord(elements, feedbackMessage = "Press Listen, then type the English word.") {
     const result = selectNextWord(state.filteredWords, state.roundWordIds);
     state.currentWord = result.word;
     state.roundWordIds = result.usedIds;
@@ -647,8 +743,10 @@
     elements.answerInput.value = "";
     renderPractice(elements);
     if (state.currentWord) {
-      setFeedback(elements, "Press Listen, then type the English word.", "");
+      setFeedback(elements, feedbackMessage, "");
       elements.answerInput.focus();
+    } else {
+      setFeedback(elements, "No words match these filters. Change the filters or start a new round.", "wrong");
     }
   }
 
@@ -674,8 +772,9 @@
     if (isCorrectAnswer(elements.answerInput.value, state.currentWord.word)) {
       state.score += 10;
       state.correct += 1;
-      setFeedback(elements, "Correct! Congratulations, excellent spelling.", "correct");
       celebrateCorrectAnswer(state.currentWord);
+      chooseNextPracticeWord(elements, "Correct! Next word ready. Press Listen.");
+      return;
     } else {
       state.wrong += 1;
       state.mistakes = addMistake(state.mistakes, state.currentWord);
@@ -787,7 +886,23 @@
     });
   }
 
+  function renderLibraryTabs(elements) {
+    elements.libraryTabButtons.forEach((button) => {
+      const isActive = button.dataset.libraryTab === state.activeLibraryTab;
+      button.classList.toggle("active", isActive);
+      button.setAttribute("aria-selected", String(isActive));
+    });
+
+    elements.libraryPanels.forEach((panel) => {
+      panel.hidden = panel.dataset.libraryPanel !== state.activeLibraryTab;
+    });
+  }
+
   function showView(elements, viewId) {
+    const leavingSpeaking = viewId !== "spell-aloud" && document.getElementById("spell-aloud")?.classList.contains("active");
+    if (leavingSpeaking) {
+      stopSpeakingActivity(elements);
+    }
     elements.views.forEach((view) => view.classList.toggle("active", view.id === viewId));
     elements.navButtons.forEach((button) => button.classList.toggle("current-view", button.dataset.view === viewId));
     elements.appNav.classList.remove("menu-open");
@@ -1038,13 +1153,14 @@
       return;
     }
 
+    stopSpeakingRecognition(elements);
     const recognition = new Recognition();
     recognition.lang = "en-US";
     recognition.interimResults = true;
     recognition.maxAlternatives = 1;
     elements.speechResult.textContent = "Listening... spell the word now.";
     recognition.onresult = (event) => {
-      if (state.speakingCompleted) return;
+      if (state.speakingCompleted || !document.getElementById("spell-aloud")?.classList.contains("active")) return;
       const transcript = Array.from(event.results).map((result) => result[0].transcript).join(" ");
       state.spokenLetters = extractSpokenLetters(transcript);
       renderSpeaking(elements);
@@ -1056,11 +1172,20 @@
       elements.speechResult.textContent = `Recognized: ${transcript}`;
     };
     recognition.onerror = (event) => {
-      if (state.speakingCompleted) return;
+      if (state.speakingCompleted || !document.getElementById("spell-aloud")?.classList.contains("active")) return;
       elements.speechResult.textContent = formatSpeechRecognitionError(event);
+    };
+    recognition.onend = () => {
+      if (state.speakingRecognition === recognition) {
+        state.speakingRecognition = null;
+      }
     };
     try {
       recognition.start();
+      state.speakingRecognition = recognition;
+      if (!state.speakingTimerId && !state.speakingCompleted) {
+        startSpeakingTimer(elements);
+      }
     } catch (error) {
       elements.speechResult.textContent = formatSpeechRecognitionError(error);
     }
@@ -1189,6 +1314,9 @@
       handleAnswer(elements);
     });
     elements.speakBtn.addEventListener("click", () => recognizeSpeech(elements));
+    elements.speakingTimerStopBtn.addEventListener("click", () => {
+      stopSpeakingActivity(elements, "Speaking activity stopped. Press Start Spelling to resume.");
+    });
     elements.newSpeakingWordBtn.addEventListener("click", () => chooseSpeakingWord(elements));
     elements.listenSpeakingWordBtn.addEventListener("click", () => speakWord(state.speakingPracticeWord));
     elements.clearSpeakingBtn.addEventListener("click", () => {
@@ -1304,6 +1432,12 @@
     });
     elements.competitionWrongBtn.addEventListener("click", () => handleCompetitionAction(elements, "mark-incorrect"));
     document.addEventListener("keydown", (event) => handleCompetitionKeydown(elements, event));
+    elements.libraryTabButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        state.activeLibraryTab = button.dataset.libraryTab;
+        renderLibraryTabs(elements);
+      });
+    });
     elements.practiceMistakesBtn.addEventListener("click", () => {
       if (!state.mistakes.length) return;
       showView(elements, "practice");
@@ -1324,11 +1458,13 @@
     elements.voiceRate.value = state.voiceRate;
     state.words = await loadWords();
     state.mistakes = readMistakes(window.localStorage);
+    state.activeLibraryTab = state.mistakes.length ? "mistakes" : "word-bank";
     renderFilters(elements);
     refreshFilteredWords(elements);
     bindEvents(elements);
     renderWordBank(elements);
     renderMistakes(elements);
+    renderLibraryTabs(elements);
     renderSpeaking(elements);
     renderCompetition(elements);
     elements.copyrightYear.textContent = new Date().getFullYear();

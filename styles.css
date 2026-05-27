@@ -10,6 +10,7 @@
   --red: #c63d37;
   --card: rgba(255, 255, 255, 0.9);
   --shadow: 0 14px 36px rgba(28, 27, 45, 0.12);
+  --soft-border: 1px solid rgba(27, 27, 41, 0.08);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
@@ -46,6 +47,7 @@ button {
   box-shadow: 0 6px 16px rgba(27, 27, 41, 0.1);
   cursor: pointer;
   transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
+  min-height: 2.75rem;
 }
 
 button:hover,
@@ -168,7 +170,49 @@ footer {
 .mistake-actions {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 0.5rem;
+}
+
+.nav-settings {
+  position: relative;
+}
+
+.nav-settings summary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.85rem;
+  height: 2.85rem;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 6px 16px rgba(27, 27, 41, 0.1);
+  cursor: pointer;
+  list-style: none;
+  font-size: 1.2rem;
+}
+
+.nav-settings summary::-webkit-details-marker {
+  display: none;
+}
+
+.nav-settings[open] summary {
+  background: var(--ink);
+  color: #fff;
+}
+
+.nav-settings-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.6rem);
+  z-index: 20;
+}
+
+.nav-settings .voice-controls {
+  width: min(22rem, calc(100vw - 2rem));
+  grid-template-columns: 1fr;
+  margin-top: 0;
+  box-shadow: 0 18px 36px rgba(27, 27, 41, 0.18);
 }
 
 .view {
@@ -180,16 +224,14 @@ footer {
 }
 
 .hero {
-  padding: clamp(1.25rem, 3vw, 3rem) clamp(1rem, 4vw, 4rem) 2.25rem;
-  min-height: calc(100vh - 92px);
+  padding: clamp(1rem, 3vw, 2.2rem) clamp(1rem, 4vw, 4rem) 2rem;
+  min-height: auto;
 }
 
-.voice-settings,
 .practice-settings {
   margin: 0.85rem 0;
 }
 
-.voice-settings summary,
 .practice-settings summary {
   width: fit-content;
   border-radius: 999px;
@@ -198,6 +240,12 @@ footer {
   box-shadow: 0 6px 16px rgba(27, 27, 41, 0.1);
   cursor: pointer;
   font-weight: 900;
+}
+
+.practice-settings[open] summary,
+.practice-helper-details[open] summary,
+.judge-section[open] .judge-title {
+  color: var(--ink);
 }
 
 .voice-controls {
@@ -215,13 +263,13 @@ footer {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
   align-items: center;
-  gap: 1.5rem;
+  gap: clamp(1rem, 3vw, 2rem);
 }
 
 .hero-copy h1 {
   max-width: 760px;
   margin: 0.25rem 0 1rem;
-  font-size: clamp(2.4rem, 6vw, 5.4rem);
+  font-size: clamp(2.35rem, 5.4vw, 4.75rem);
   line-height: 0.95;
   letter-spacing: -0.06em;
 }
@@ -238,6 +286,7 @@ footer {
 .practice-card,
 .speaking-card,
 .competition-card,
+.library-panel,
 .team-setup,
 .word-stage,
 .feedback,
@@ -260,15 +309,30 @@ footer {
 }
 
 .bee-card {
-  padding: 1.45rem;
-  min-height: 280px;
+  padding: clamp(1rem, 2vw, 1.45rem);
+  min-height: 240px;
   display: grid;
   align-content: center;
+  gap: 0.8rem;
 }
 
 .bee-icon {
-  font-size: 4.5rem;
+  font-size: clamp(2.6rem, 5vw, 4.5rem);
   filter: drop-shadow(0 12px 18px rgba(217, 144, 0, 0.28));
+}
+
+.hero-highlights {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.hero-highlights span {
+  border-radius: 999px;
+  padding: 0.5rem 0.65rem;
+  background: var(--cream);
+  font-weight: 900;
+  text-align: center;
 }
 
 main {
@@ -338,9 +402,137 @@ button {
   padding: clamp(0.9rem, 2vw, 1.35rem);
 }
 
+.practice-layout,
+.practice-round-meta,
+.practice-word-meta,
+.practice-clue-grid {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.practice-layout {
+  grid-template-columns: minmax(0, 1.5fr) minmax(280px, 0.7fr);
+  align-items: start;
+}
+
+.practice-main-panel,
+.practice-sidebar,
+.practice-summary-bar,
+.practice-helper-card {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.practice-sidebar {
+  align-content: start;
+}
+
+.practice-summary-bar,
+.practice-helper-card,
+.practice-clue-grid article {
+  border-radius: 1.1rem;
+  background: rgba(255, 255, 255, 0.76);
+  padding: 0.9rem;
+}
+
+.practice-helper-card:not([open]) {
+  padding-bottom: 0.35rem;
+}
+
+.practice-helper-details {
+  padding: 0.35rem;
+}
+
+.practice-helper-details summary {
+  display: grid;
+  gap: 0.18rem;
+  list-style: none;
+  cursor: pointer;
+  padding: 0.55rem;
+  border-radius: 0.9rem;
+}
+
+.practice-helper-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.practice-helper-details summary strong {
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.practice-helper-details[open] summary {
+  margin-bottom: 0.2rem;
+}
+
+.practice-round-meta {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.practice-round-meta article,
+.practice-word-meta article {
+  border-radius: 0.95rem;
+  background: rgba(255, 255, 255, 0.68);
+  padding: 0.78rem 0.85rem;
+}
+
+.practice-meta-label {
+  display: block;
+  margin: 0 0 0.25rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.practice-round-meta strong,
+.practice-word-meta strong,
+.practice-clue-grid strong {
+  display: block;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.practice-stage {
+  display: grid;
+  gap: 0.9rem;
+  margin-bottom: 0;
+}
+
+.practice-word-meta {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.practice-primary-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) repeat(2, minmax(0, 0.9fr));
+  gap: 0.75rem;
+}
+
+.practice-steps {
+  margin: 0;
+  padding-left: 1.1rem;
+  color: var(--muted);
+  display: grid;
+  gap: 0.45rem;
+  font-weight: 700;
+}
+
+.practice-clue-grid {
+  grid-template-columns: 1fr;
+}
+
+.practice-secondary-actions {
+  margin-top: 0.1rem;
+}
+
+.practice-filters-card strong {
+  line-height: 1.35;
+}
+
 .score-strip {
   grid-template-columns: repeat(4, 1fr);
-  margin-bottom: 0.9rem;
 }
 
 .score-strip span,
@@ -387,6 +579,10 @@ button {
   gap: 0.75rem;
 }
 
+.answer-row button {
+  min-width: 8rem;
+}
+
 .speaking-timer {
   display: inline-flex;
   align-items: center;
@@ -397,6 +593,8 @@ button {
   background: var(--ink);
   color: #fff;
   font-weight: 800;
+  white-space: nowrap;
+  box-shadow: 0 6px 16px rgba(27, 27, 41, 0.1);
 }
 
 .speaking-timer strong {
@@ -409,6 +607,56 @@ button {
   flex-wrap: wrap;
   gap: 0.45rem;
   margin: 0.85rem 0;
+}
+
+.speaking-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+  gap: 0.85rem;
+}
+
+.speaking-challenge-card,
+.speaking-actions-card {
+  display: grid;
+  gap: 0.85rem;
+  border-radius: 1.1rem;
+  background: rgba(255, 255, 255, 0.72);
+  border: var(--soft-border);
+  padding: clamp(0.85rem, 2vw, 1rem);
+}
+
+.speaking-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.85rem;
+}
+
+.speaking-header-row p {
+  margin: 0;
+}
+
+.speaking-main-action {
+  min-height: 3.4rem;
+  font-size: 1rem;
+}
+
+.speaking-secondary-actions,
+.speaking-validation-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.speaking-validation-actions {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.speech-result {
+  margin: 0;
+  border-radius: 0.9rem;
+  background: var(--sky);
+  padding: 0.78rem 0.85rem;
+  font-weight: 800;
 }
 
 .spelling-slot {
@@ -510,7 +758,7 @@ button {
 }
 
 .competition-heading h2 {
-  font-size: clamp(2.2rem, 4.4vw, 4.4rem);
+  font-size: clamp(2rem, 4vw, 3.6rem);
 }
 
 .projector-scoreboard {
@@ -591,6 +839,11 @@ button {
 .competition-actions {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.competition-actions .primary,
+.competition-actions .secondary {
+  min-height: 3rem;
 }
 
 .competition-word-stage {
@@ -802,6 +1055,58 @@ button {
   margin-top: 0.85rem;
 }
 
+.library-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin: 1rem 0;
+  padding: 0.35rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.58);
+  border: 1px solid rgba(27, 27, 41, 0.08);
+}
+
+.library-tab {
+  box-shadow: none;
+  background: transparent;
+  border-radius: 0.8rem;
+}
+
+.library-tab.active {
+  background: var(--ink);
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(27, 27, 41, 0.14);
+}
+
+.library-panel {
+  padding: clamp(0.85rem, 2vw, 1.15rem);
+  border-radius: 1.2rem;
+  background: rgba(255, 255, 255, 0.68);
+  border: 1px solid rgba(27, 27, 41, 0.08);
+}
+
+.library-panel[hidden] {
+  display: none;
+}
+
+.library-panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.library-panel-heading h3,
+.library-panel-heading p {
+  margin: 0;
+}
+
+.library-panel-heading > p {
+  max-width: 24rem;
+  color: var(--muted);
+  font-weight: 800;
+}
+
 .word-bank-category {
   display: block;
   width: 100%;
@@ -899,6 +1204,8 @@ footer {
 @media (max-width: 880px) {
   .app-shell-nav,
   .hero-grid,
+  .practice-layout,
+  .speaking-layout,
   .competition-layout {
     grid-template-columns: 1fr;
   }
@@ -930,6 +1237,24 @@ footer {
     width: 100%;
   }
 
+  .nav-settings {
+    width: 100%;
+  }
+
+  .nav-settings summary {
+    width: 100%;
+    border-radius: 0.85rem;
+  }
+
+  .nav-settings-panel {
+    position: static;
+    padding-top: 0.5rem;
+  }
+
+  .nav-settings .voice-controls {
+    width: 100%;
+  }
+
   .hero {
     min-height: auto;
   }
@@ -938,12 +1263,18 @@ footer {
     margin-left: 0;
   }
 
+  .practice-sidebar,
   .competition-judge {
     position: static;
   }
 
   .controls-grid,
   .score-strip,
+  .practice-round-meta,
+  .practice-word-meta,
+  .practice-primary-actions,
+  .speaking-secondary-actions,
+  .speaking-validation-actions,
   .points-grid,
   .competition-status,
   .clue-grid,
@@ -1010,11 +1341,33 @@ footer {
     border-radius: 1.25rem;
   }
 
+  .practice-card {
+    padding: 0.8rem;
+  }
+
+  .practice-layout {
+    gap: 0.7rem;
+  }
+
+  .practice-summary-bar {
+    position: sticky;
+    top: 5rem;
+    z-index: 2;
+    gap: 0.7rem;
+    padding: 0.75rem;
+    box-shadow: 0 10px 24px rgba(27, 27, 41, 0.08);
+    backdrop-filter: blur(14px);
+  }
+
   .nav-actions button,
   .hero-buttons button,
   .listen-actions button,
+  .practice-primary-actions button,
+  .speaking-secondary-actions button,
+  .speaking-validation-actions button,
   .manual-actions button,
   .mistake-actions button,
+  .library-tab,
   .voice-controls button,
   .answer-row button,
   .controls-grid button {
@@ -1023,6 +1376,11 @@ footer {
 
   .controls-grid,
   .score-strip,
+  .practice-round-meta,
+  .practice-word-meta,
+  .practice-primary-actions,
+  .speaking-secondary-actions,
+  .speaking-validation-actions,
   .points-grid,
   .competition-status,
   .clue-grid,
@@ -1032,6 +1390,123 @@ footer {
   .judge-inline-actions,
   .shortcut-list {
     grid-template-columns: 1fr;
+  }
+
+  .score-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem;
+  }
+
+  .score-strip span {
+    padding: 0.65rem 0.75rem;
+    font-size: 0.88rem;
+  }
+
+  .practice-round-meta {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem;
+  }
+
+  .practice-filters-card {
+    grid-column: 1 / -1;
+  }
+
+  .practice-word-meta {
+    grid-template-columns: repeat(3, minmax(6.25rem, 1fr));
+    gap: 0.55rem;
+  }
+
+  .practice-word-meta article,
+  .practice-round-meta article,
+  .practice-clue-grid article {
+    padding: 0.72rem 0.75rem;
+  }
+
+  .practice-primary-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.6rem;
+  }
+
+  .practice-listen-btn {
+    grid-column: 1 / -1;
+    min-height: 3.15rem;
+    font-size: 1rem;
+  }
+
+  .practice-listen-context-btn,
+  .practice-next-btn,
+  .answer-row button {
+    min-height: 3rem;
+  }
+
+  .answer-form {
+    gap: 0.6rem;
+  }
+
+  .answer-row input {
+    min-height: 3rem;
+    font-size: 1rem;
+  }
+
+  .feedback {
+    margin-top: 0.2rem;
+    padding: 0.8rem;
+  }
+
+  .practice-sidebar {
+    gap: 0.7rem;
+  }
+
+  .practice-helper-details {
+    padding: 0.3rem;
+  }
+
+  .practice-helper-details summary {
+    padding: 0.65rem 0.7rem;
+  }
+
+  .practice-helper-details .practice-steps,
+  .practice-helper-details .practice-clue-grid,
+  .practice-helper-details .practice-secondary-actions {
+    padding-left: 0.4rem;
+    padding-right: 0.4rem;
+    padding-bottom: 0.4rem;
+  }
+
+  .practice-settings summary {
+    width: 100%;
+    text-align: center;
+  }
+
+  .hero-buttons,
+  .speaking-header-row {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .hero-highlights {
+    grid-template-columns: 1fr;
+  }
+
+  .speaking-challenge-card,
+  .speaking-actions-card {
+    padding: 0.8rem;
+  }
+
+  .speaking-main-action {
+    min-height: 3.5rem;
+  }
+
+  .library-tabs {
+    grid-template-columns: 1fr;
+    padding: 0.3rem;
+  }
+
+  .library-panel-heading,
+  .mistake-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: stretch;
   }
 
   .hero-copy h1 {
