@@ -52,9 +52,6 @@
     speakingAdvanceTimer: null,
     speakingTimerId: null,
     speakingRecognition: null,
-    speakingRecognitionWanted: false,
-    speakingRecognitionTranscript: "",
-    speakingRecognitionCurrentTranscript: "",
     speakingSecondsLeft: SPEAKING_SECONDS,
     mistakes: [],
     teams: buildDefaultTeams(),
@@ -227,24 +224,6 @@
       .map((token) => letterWords[token] || (token.length === 1 ? token : token.replace(/[^a-z]/g, "")))
       .join("")
       .replace(/[^a-z]/g, "");
-  }
-
-  function removeUnexpectedDuplicateLetters(word, spokenLetters) {
-    const target = normalizeAnswer(word).replace(/[^a-z]/g, "");
-    const spoken = extractSpokenLetters(spokenLetters);
-    let cleaned = "";
-
-    for (const letter of spoken) {
-      if (cleaned.length >= target.length) break;
-      const expectedLetter = target[cleaned.length];
-      const previousLetter = cleaned[cleaned.length - 1];
-      if (letter === previousLetter && expectedLetter !== letter) {
-        continue;
-      }
-      cleaned += letter;
-    }
-
-    return cleaned;
   }
 
   function buildSpellingProgress(word, spokenLetters) {
@@ -668,7 +647,6 @@
   }
 
   function stopSpeakingRecognition(elements) {
-    state.speakingRecognitionWanted = false;
     if (!state.speakingRecognition) return;
     const recognition = state.speakingRecognition;
     state.speakingRecognition = null;
@@ -734,8 +712,6 @@
     state.speakingPracticeWord = result.word;
     state.speakingWordIds = result.usedIds;
     state.spokenLetters = "";
-    state.speakingRecognitionTranscript = "";
-    state.speakingRecognitionCurrentTranscript = "";
     state.speakingCompleted = false;
     state.speakingSecondsLeft = SPEAKING_SECONDS;
     stopSpeakingTimer();
@@ -1167,7 +1143,7 @@
     elements.winnerDisplay.textContent = winner && winner.score > 0 ? `Current leader: ${winner.name}` : "";
   }
 
-  function recognizeSpeech(elements, preserveTranscript = false) {
+  function recognizeSpeech(elements) {
     if (!state.speakingPracticeWord) {
       elements.speechResult.textContent = "Choose a random word first.";
       return;
@@ -1179,61 +1155,31 @@
       return;
     }
 
-    if (!preserveTranscript) {
-      stopSpeakingRecognition(elements);
-    }
-    state.speakingRecognitionWanted = true;
-    if (!preserveTranscript) {
-      state.speakingRecognitionTranscript = "";
-      state.speakingRecognitionCurrentTranscript = "";
-    }
+    stopSpeakingRecognition(elements);
     const recognition = new Recognition();
     recognition.lang = "en-US";
-    recognition.continuous = true;
     recognition.interimResults = true;
     recognition.maxAlternatives = 1;
-    let sessionTranscript = "";
     elements.speechResult.textContent = "Listening... spell the word now.";
     recognition.onresult = (event) => {
       if (state.speakingCompleted || !document.getElementById("spell-aloud")?.classList.contains("active")) return;
-      const sessionParts = [];
-      for (let index = 0; index < event.results.length; index += 1) {
-        const result = event.results[index];
-        sessionParts.push(result[0].transcript);
-      }
-      sessionTranscript = sessionParts.join(" ").trim();
-      const fullTranscript = `${state.speakingRecognitionTranscript} ${sessionTranscript}`.trim();
-      state.speakingRecognitionCurrentTranscript = fullTranscript;
-      state.spokenLetters = removeUnexpectedDuplicateLetters(state.speakingPracticeWord.word, fullTranscript);
+      const transcript = Array.from(event.results).map((result) => result[0].transcript).join(" ");
+      state.spokenLetters = extractSpokenLetters(transcript);
       renderSpeaking(elements);
       if (isSpellingComplete(state.speakingPracticeWord.word, state.spokenLetters)) {
-        state.speakingRecognitionWanted = false;
-        completeSpeakingWord(elements, fullTranscript);
+        completeSpeakingWord(elements, transcript);
         recognition.stop();
         return;
       }
-      elements.speechResult.textContent = `Recognized letters: ${state.spokenLetters.toUpperCase()}`;
+      elements.speechResult.textContent = `Recognized: ${transcript}`;
     };
     recognition.onerror = (event) => {
       if (state.speakingCompleted || !document.getElementById("spell-aloud")?.classList.contains("active")) return;
-      if (["not-allowed", "service-not-allowed", "language-not-supported"].includes(event.error)) {
-        state.speakingRecognitionWanted = false;
-      }
       elements.speechResult.textContent = formatSpeechRecognitionError(event);
     };
     recognition.onend = () => {
       if (state.speakingRecognition === recognition) {
         state.speakingRecognition = null;
-      }
-      if (sessionTranscript) {
-        state.speakingRecognitionTranscript = `${state.speakingRecognitionTranscript} ${sessionTranscript}`.trim();
-        state.speakingRecognitionCurrentTranscript = state.speakingRecognitionTranscript;
-      }
-      if (state.speakingRecognitionWanted && !state.speakingCompleted && document.getElementById("spell-aloud")?.classList.contains("active")) {
-        window.setTimeout(() => {
-          if (!state.speakingRecognitionWanted || state.speakingRecognition || state.speakingCompleted) return;
-          recognizeSpeech(elements, true);
-        }, 180);
       }
     };
     try {
@@ -1243,7 +1189,6 @@
         startSpeakingTimer(elements);
       }
     } catch (error) {
-      state.speakingRecognitionWanted = false;
       elements.speechResult.textContent = formatSpeechRecognitionError(error);
     }
   }
@@ -1549,7 +1494,6 @@
       formatHiddenValue,
       getCompetitionShortcutAction,
       extractSpokenLetters,
-      removeUnexpectedDuplicateLetters,
       findBestVoice,
       filterWords,
       assignNextTeamKey,
