@@ -7,7 +7,7 @@
   const STORAGE_KEY = "spellingBeeInseMistakes";
   const VOICE_SETTINGS_KEY = "spellingBeeInseVoiceSettings";
   const PREFERRED_VOICE_NAMES = ["natural", "online", "neural", "google", "microsoft", "zira", "aria", "jenny", "samantha", "daniel"];
-  const SPEAKING_SECONDS = 15;
+  const SPEAKING_SECONDS = 30;
 
   const state = {
     words: [],
