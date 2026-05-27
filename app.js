@@ -7,6 +7,7 @@
   const STORAGE_KEY = "spellingBeeInseMistakes";
   const VOICE_SETTINGS_KEY = "spellingBeeInseVoiceSettings";
   const PREFERRED_VOICE_NAMES = ["natural", "online", "neural", "google", "microsoft", "zira", "aria", "jenny", "samantha", "daniel"];
+  const SPEAKING_SECONDS = 15;
 
   const state = {
     words: [],
@@ -24,6 +25,8 @@
     speakingWordIds: [],
     speakingCompleted: false,
     speakingAdvanceTimer: null,
+    speakingTimerId: null,
+    speakingSecondsLeft: SPEAKING_SECONDS,
     mistakes: [],
     teams: [
       { id: 1, name: "Team A", score: 0 },
@@ -247,6 +250,7 @@
       wrongValue: document.getElementById("wrong-value"),
       progressValue: document.getElementById("progress-value"),
       speakingWord: document.getElementById("speaking-word"),
+      speakingTimerValue: document.getElementById("speaking-timer-value"),
       spellingSlots: document.getElementById("spelling-slots"),
       newSpeakingWordBtn: document.getElementById("new-speaking-word-btn"),
       listenSpeakingWordBtn: document.getElementById("listen-speaking-word-btn"),
@@ -410,6 +414,7 @@
   function renderSpeaking(elements) {
     const word = state.speakingPracticeWord;
     elements.speakingWord.textContent = word ? `${word.meaning} (${word.level})` : "No word selected";
+    elements.speakingTimerValue.textContent = state.speakingSecondsLeft;
     elements.spellingSlots.innerHTML = "";
 
     if (!word) {
@@ -425,6 +430,38 @@
     });
   }
 
+  function stopSpeakingTimer() {
+    if (state.speakingTimerId) {
+      window.clearInterval(state.speakingTimerId);
+      state.speakingTimerId = null;
+    }
+  }
+
+  function scheduleNextSpeakingWord(elements, delay = 1200) {
+    if (state.speakingAdvanceTimer) {
+      window.clearTimeout(state.speakingAdvanceTimer);
+    }
+    state.speakingAdvanceTimer = window.setTimeout(() => chooseSpeakingWord(elements), delay);
+  }
+
+  function startSpeakingTimer(elements) {
+    stopSpeakingTimer();
+    state.speakingSecondsLeft = SPEAKING_SECONDS;
+    renderSpeaking(elements);
+    if (!state.speakingPracticeWord) return;
+
+    state.speakingTimerId = window.setInterval(() => {
+      state.speakingSecondsLeft -= 1;
+      elements.speakingTimerValue.textContent = state.speakingSecondsLeft;
+      if (state.speakingSecondsLeft <= 0) {
+        stopSpeakingTimer();
+        state.speakingCompleted = true;
+        elements.speechResult.textContent = "Time is up. Next word coming up...";
+        scheduleNextSpeakingWord(elements);
+      }
+    }, 1000);
+  }
+
   function chooseSpeakingWord(elements) {
     const pool = state.filteredWords.length ? state.filteredWords : state.words;
     const result = selectNextWord(pool, state.speakingWordIds);
@@ -432,6 +469,8 @@
     state.speakingWordIds = result.usedIds;
     state.spokenLetters = "";
     state.speakingCompleted = false;
+    state.speakingSecondsLeft = SPEAKING_SECONDS;
+    stopSpeakingTimer();
     if (state.speakingAdvanceTimer) {
       window.clearTimeout(state.speakingAdvanceTimer);
       state.speakingAdvanceTimer = null;
@@ -439,6 +478,7 @@
     elements.manualSpellingInput.value = "";
     elements.speechResult.textContent = "Listen to the word, then press Start Spelling.";
     renderSpeaking(elements);
+    startSpeakingTimer(elements);
     speakWord(state.speakingPracticeWord);
   }
 
@@ -446,11 +486,12 @@
     if (!state.speakingPracticeWord || state.speakingCompleted) return;
 
     state.speakingCompleted = true;
+    stopSpeakingTimer();
     elements.speechResult.textContent = transcript
       ? `Correct! Completed from: ${transcript}. Next word coming up...`
       : "Correct! Next word coming up...";
     celebrateCorrectAnswer(state.speakingPracticeWord);
-    state.speakingAdvanceTimer = window.setTimeout(() => chooseSpeakingWord(elements), 1800);
+    scheduleNextSpeakingWord(elements, 1800);
   }
 
   function chooseNextPracticeWord(elements) {
@@ -634,6 +675,7 @@
     recognition.maxAlternatives = 1;
     elements.speechResult.textContent = "Listening... spell the word now.";
     recognition.onresult = (event) => {
+      if (state.speakingCompleted) return;
       const transcript = Array.from(event.results).map((result) => result[0].transcript).join(" ");
       state.spokenLetters = extractSpokenLetters(transcript);
       renderSpeaking(elements);
@@ -720,6 +762,7 @@
       renderSpeaking(elements);
     });
     elements.manualSpellingInput.addEventListener("input", () => {
+      if (state.speakingCompleted) return;
       state.spokenLetters = extractSpokenLetters(elements.manualSpellingInput.value);
       renderSpeaking(elements);
       if (isSpellingComplete(state.speakingPracticeWord?.word, state.spokenLetters)) {
