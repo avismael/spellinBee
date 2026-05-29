@@ -636,6 +636,27 @@ button {
   margin: 0;
 }
 
+#speaking-word {
+  display: block;
+  margin-top: 0.4rem;
+  padding: 0.75rem 0.95rem;
+  border-radius: 1rem;
+  background: linear-gradient(135deg, var(--honey) 0%, #ffe889 100%);
+  color: #241a00;
+  font-size: clamp(1.65rem, 5vw, 3.2rem);
+  line-height: 1.05;
+  box-shadow: 0 12px 28px rgba(217, 144, 0, 0.24);
+}
+
+#speaking-meaning {
+  display: block;
+  margin-top: 0.55rem;
+  color: var(--ink);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
 .speaking-main-action {
   min-height: 3.4rem;
   font-size: 1rem;

@@ -363,6 +363,7 @@
       wrongValue: document.getElementById("wrong-value"),
       progressValue: document.getElementById("progress-value"),
       speakingWord: document.getElementById("speaking-word"),
+      speakingMeaning: document.getElementById("speaking-meaning"),
       speakingTimerStopBtn: document.getElementById("speaking-timer-stop-btn"),
       speakingTimerValue: document.getElementById("speaking-timer-value"),
       spellingSlots: document.getElementById("spelling-slots"),
@@ -615,7 +616,8 @@
 
   function renderSpeaking(elements) {
     const word = state.speakingPracticeWord;
-    elements.speakingWord.textContent = word ? `${word.meaning} (${word.level})` : "No word selected";
+    elements.speakingWord.textContent = word ? word.word : "No word selected";
+    elements.speakingMeaning.textContent = word ? `${word.meaning} (${word.level})` : "Choose a random word to start.";
     elements.speakingTimerValue.textContent = state.speakingSecondsLeft;
     elements.spellingSlots.innerHTML = "";
 
